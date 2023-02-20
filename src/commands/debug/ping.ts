@@ -4,12 +4,7 @@ import { Client, GatewayIntentBits } from 'discord.js'
 import { MongoClient } from 'mongodb'
 require('dotenv').config();
 
-interface TextChannel {
-  messages: MessageManager
-}
-interface MessageManager {
-
-}
+let db: any
 
 
 const client = new Client({
@@ -47,27 +42,33 @@ export default command(meta, async ({ interaction }) => {
   const messages = await Channel!.messages.fetch();
   let target:any = Array.from(messages.values())
   target = target.filter((msg:any) => msg.id == messageid)[0]
-  console.log(target.content)
+  console.log("message content: " + target.content)
+  console.log(target)
+  insertQuote(target.content)
   // let filtered = messages.filter((msg) => msg.content.startsWith(wf));
   console.log(`guildID:${guildId}\nchannel:${channelId}`)
-  db(target.content);
+  
   return interaction.reply({
     ephemeral: false,
     content:target.content // messageid ?? 'Pong! 🏓'
   })
 })
 
-const db = async (quote: string) => { 
-  const obj: any = {quote: quote}
+const dbConnect = async () => { 
   MongoClient.connect(process.env.MONGODB_URL!, {})
   .then(
-  (err?:any, db?:any) => {
-    if (err) throw err;
-    const dbo:any = db.db("default");
-    dbo.collection("quotes").insertOne(obj, function(err:any, res:any) {
-      if (err) throw err;
-      console.log("1 quote added");
-      db.close();
-      })
-    })
+  (database?:any) => {
+    db = database
+
+  })
+  .catch(console.error)
 }
+
+const insertQuote = async ( quote: string ) => {
+    console.log("in function")
+    const temp = db.db("Default");
+    await temp.collection("quotes").insertOne({quote: quote})
+    .catch((err: any) => console.log(err))
+    
+}
+dbConnect();
