@@ -1,10 +1,12 @@
+import { QuoteDefault } from './../../types/quote';
+import { insertQuote } from '../../database/index';
 import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
 import { command } from '../../utils'
 import { Client, GatewayIntentBits } from 'discord.js'
-import { MongoClient } from 'mongodb'
+
 require('dotenv').config();
 
-let db: any
+// let db: any
 
 
 const client = new Client({
@@ -13,7 +15,7 @@ const client = new Client({
   ],
 })
 
-const meta = new SlashCommandBuilder()
+const quote = new SlashCommandBuilder()
   .setName('quote')
   .setDescription('quote your friends.')
   .addStringOption((option) =>
@@ -25,40 +27,32 @@ const meta = new SlashCommandBuilder()
       .setRequired(true)
   )
 
-export default command(meta, async ({ interaction }) => {
-
-  const messageid:string = interaction.options.getString('messageid')!
-  const guildId = interaction.guildId
-  const channelId = interaction.channelId
+export default command(quote, async ({ interaction }) => {
+  const messageid: string = interaction.options.getString('messageid')!
+  const guildId: string = interaction.guildId!
+  const channelId: string = interaction.channelId!
   let Channel: any = await interaction.client.channels.fetch(channelId);
-  const messages = await Channel!.messages.fetch();
-  let target:any = Array.from(messages.values())
-  target = target.filter((msg:any) => msg.id == messageid)[0]
-  console.log("message content: " + target.content)
-  insertQuote(target.content)
-  console.log(`guildID:${guildId}\nchannel:${channelId}`)
+  const message = await Channel!.messages.fetch(messageid);
+  //console.log(message.author)
+  //console.log(interaction)
+ 
+  const quoteObject: QuoteDefault = {
+    content: <string>message.content,
+    timestamp: <Date>message.createdAt,
+    user: <string>message.author.id,
+    message: messageid,
+    channel: channelId,
+    guild: guildId,
+    quoter: interaction.user.id,
+    tag: ""
+  };
+  await insertQuote(quoteObject);
+
+  //console.log(`guildID:${typeof guildId}\nchannel:${channelId}`)
   
   return interaction.reply({
     ephemeral: false,
-    content: `"${target.content}" has been quoted 👌` // messageid ?? 'Pong! 🏓'
+    content: `"${quoteObject.content}" has been quoted 👌` 
   })
 })
 
-const dbConnect = async () => { 
-  MongoClient.connect(process.env.MONGODB_URL!, {})
-  .then(
-  (database?:any) => {
-    db = database
-
-  })
-  .catch(console.error)
-}
-
-const insertQuote = async ( quote: string ) => {
-
-    const temp = db.db("Default");
-    await temp.collection("quotes").insertOne({quote: quote})
-    .catch((err: any) => console.log(err))
-    console.log("in function")
-}
-dbConnect();

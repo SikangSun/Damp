@@ -1,3 +1,4 @@
+import { dbConnect } from './../database/index';
 import { Client, GatewayIntentBits } from 'discord.js'
 import { registerEvents } from '../utils'
 import events from '../events'
@@ -18,3 +19,4 @@ client.login(keys.clientToken)
     process.exit(1)
   })
 
+dbConnect();

@@ -34,11 +34,11 @@ export default event('interactionCreate', async (
 
     if (interaction.deferred)
       return interaction.editReply(
-        EditReply.error('Something went wrong :(')
+        EditReply.error('Something went wrong :( \nServer error')
       )
 
     return interaction.reply(
-      Reply.error('Something went wrong :(')
+      Reply.error('Something went wrong :( \nServer error')
     )
   }
 })
