@@ -7,8 +7,6 @@ import { Client, GatewayIntentBits } from 'discord.js'
 require('dotenv').config();
 
 // let db: any
-
-
 const client = new Client({
   intents: [
     GatewayIntentBits.GuildMessages
@@ -23,18 +21,27 @@ const quote = new SlashCommandBuilder()
       .setName('messageid')
       .setDescription('Provide the bot with the ID of the message you want to quote.')
       .setMinLength(1)
-      .setMaxLength(2000)
+      .setMaxLength(30)
       .setRequired(true)
+  )
+  .addStringOption((option) =>
+    option
+      .setName('tag')
+      .setDescription('Give an unique tag for this quote for look up later')
+      .setMinLength(1)
+      .setMaxLength(15)
+      .setRequired(false)
   )
 
 export default command(quote, async ({ interaction }) => {
   const messageid: string = interaction.options.getString('messageid')!
+  const tag: string = interaction.options.getString('tag')!
   const guildId: string = interaction.guildId!
   const channelId: string = interaction.channelId!
   let Channel: any = await interaction.client.channels.fetch(channelId);
   const message = await Channel!.messages.fetch(messageid);
   //console.log(message.author)
-  //console.log(interaction)
+  // console.log(interaction)
  
   const quoteObject: QuoteDefault = {
     content: <string>message.content,
@@ -44,7 +51,7 @@ export default command(quote, async ({ interaction }) => {
     channel: channelId,
     guild: guildId,
     quoter: interaction.user.id,
-    tag: ""
+    tag: tag
   };
   await insertQuote(quoteObject);
 
