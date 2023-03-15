@@ -10,7 +10,7 @@ require('dotenv').config();
 
 
 const getone = new SlashCommandBuilder()
-  .setName('getone')
+  .setName('getquote')
   .setDescription('find quote by tag or id')
   .addStringOption((option) =>
     option

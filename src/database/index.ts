@@ -39,4 +39,24 @@ export const getTagQuote = async (tag: string): Promise<QuoteDefault> => {
   const one: QuoteDefault[] = await temp.collection("quotes").find({tag: tag}).toArray()
   return one[0];
 }
-  
+
+export const updateTagQuote = async (tag: string, newtag: string, id: string): Promise<boolean> => {
+  if (!db) await dbConnect();
+  const temp = db.db("Default");
+
+  let result = await temp.collection("quotes").updateOne({tag: tag}, {$set: {tag: newtag}})
+    .catch((err: any) => {
+      console.log(err);
+      return false;
+    })
+  console.log(result);
+  if (!result.modifiedCount) {
+    result = await temp.collection("quotes").updateOne({message: id}, {$set: {tag: newtag}})
+      .catch((err: any) => {
+        console.log(err);
+        return false;
+      })
+  }
+
+  return result.modifiedCount ? true : false;
+}

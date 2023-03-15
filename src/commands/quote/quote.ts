@@ -12,7 +12,7 @@ const quote = new SlashCommandBuilder()
   .setDescription('quote your friends.')
   .addStringOption((option) =>
     option
-      .setName('messageid')
+      .setName('message_id')
       .setDescription('Provide the bot with the ID of the message you want to quote.')
       .setMinLength(1)
       .setMaxLength(30)
@@ -28,7 +28,7 @@ const quote = new SlashCommandBuilder()
   )
 
 export default command(quote, async ({ interaction }) => {
-  const messageid: string = interaction.options.getString('messageid')!
+  const messageid: string = interaction.options.getString('message_id')!
   const tag: string = interaction.options.getString('tag')!
 
   if (tag) { //checking tag uniqueness

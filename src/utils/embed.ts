@@ -28,7 +28,7 @@ export const embedQuote = async (quote: QuoteDefault): Promise<EmbedBuilder> => 
 		.setColor(0x6375a1)
 		.setAuthor({ name: `${user?.username} said:`, iconURL: user?.avatarURL()!})
 		.setDescription(`${quote.content ? quote.content :"<Empty>"}`)
-		//.addFields([{ name: 'ID', value: `${quote!.message}`, inline: true }, {name: 'Tag', value: `${quote!.tag ? `\"${quote.tag}\"` : "None"}`, inline: true}])
+		.addFields([{ name: 'ID', value: `${quote!.message}`, inline: true }, {name: 'Tag', value: `${quote!.tag ? `\"${quote.tag}\"` : "None"}`, inline: true}])
 		.setThumbnail(user?.avatarURL()!)
 		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
 }
