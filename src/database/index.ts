@@ -1,5 +1,6 @@
 import { QuoteDefault } from './../types/quote';
 import { MongoClient } from 'mongodb'
+
 require('dotenv').config();
 
 export let db: any;
@@ -14,7 +15,9 @@ export const dbConnect = async () => {
   }
   
 export const insertQuote = async ( quote: QuoteDefault ): Promise<void> => {
+  if (!db) await dbConnect();
   const temp = db.db("Default");
+
   await temp.collection("quotes").insertOne(quote)
   .catch((err: any) => console.log(err))
   console.log("Inserted Quote");
@@ -22,8 +25,9 @@ export const insertQuote = async ( quote: QuoteDefault ): Promise<void> => {
 }
 
 export const getAllQuotes = async () => {
+  if (!db) await dbConnect();
   const temp = db.db("Default");
-  
+
   const all = await temp.collection("quotes").find({}).toArray()
   //console.log(all);
   return all;

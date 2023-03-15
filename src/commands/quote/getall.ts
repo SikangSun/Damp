@@ -1,16 +1,19 @@
+import { EmbedBuilder, Client } from 'discord.js';
+import { QuoteDefault } from './../../types/quote';
+import { embedQuote } from './../../utils/embed';
 import { getAllQuotes } from './../../database/index';
-import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
-import { command } from '../../utils'
-import { Client, GatewayIntentBits } from 'discord.js'
+import { SlashCommandBuilder, InteractionWebhook } from 'discord.js';
+import { command } from '../../utils';
+import { GatewayIntentBits } from 'discord.js';
 
 require('dotenv').config();
 
-
 const client = new Client({
-  intents: [
-    GatewayIntentBits.GuildMessages
-  ],
-})
+    intents: [
+        GatewayIntentBits.GuildMessages
+    ],
+  })
+
 
 const getall = new SlashCommandBuilder()
   .setName('getquotes')
@@ -24,10 +27,11 @@ export default command(getall, async ({ interaction }) => {
     ephemeral: false,
     content: `Here is all your quotes` 
 })
-    content.map(async (element: any) => {
+    content.map(async (element: QuoteDefault) => {
+        const example: EmbedBuilder = await embedQuote(element);
         await interaction.followUp({
             ephemeral: false,
-            content: `${element.quote}` 
+            embeds: [example],
         })
     });
     return;
