@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client } from 'discord.js';
 import { QuoteDefault } from './../../types/quote';
 import { embedQuote, findFailed } from './../../utils/embed';
-import { getAllQuotes, getTagQuote, updateTagQuote } from './../../database';
+import { updateTagQuote } from './../../database';
 import { SlashCommandBuilder, InteractionWebhook } from 'discord.js';
 import { command } from '../../utils';
 import { GatewayIntentBits } from 'discord.js';

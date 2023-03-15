@@ -1,4 +1,4 @@
-import { QuoteDefault } from './../types/quote';
+import { QuoteDefault, QuoteImage } from './../types/quote';
 import { MongoClient } from 'mongodb'
 
 require('dotenv').config();
@@ -14,7 +14,7 @@ export const dbConnect = async () => {
     .catch(console.error)
   }
   
-export const insertQuote = async ( quote: QuoteDefault ): Promise<void> => {
+export const insertQuote = async ( quote: QuoteDefault | QuoteImage): Promise<void> => {
   if (!db) await dbConnect();
   const temp = db.db("Default");
 

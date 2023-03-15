@@ -30,6 +30,7 @@ export default command(getall, async ({ interaction }) => {
     ephemeral: false,
     content: `Here is all your quotes` 
 })
+
     content.map(async (element: QuoteDefault) => {
         const example: EmbedBuilder = await embedQuote(element);
         await interaction.followUp({

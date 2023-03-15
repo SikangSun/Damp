@@ -1,5 +1,5 @@
 import { EmbedBuilder, Client, User, GatewayIntentBits } from 'discord.js';
-import { QuoteDefault } from './../types/quote';
+import { QuoteDefault, QuoteImage } from './../types/quote';
 import keys from '../keys'
 import date from 'date-and-time';
 
@@ -17,8 +17,31 @@ const embedClient = new Client({
   })
 
 
-export const embedQuote = async (quote: QuoteDefault): Promise<EmbedBuilder> => {
-    const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+export const embedQuote = async (quote: QuoteDefault | QuoteImage): Promise<EmbedBuilder> => {
+
+	if (quote.type === "message") {
+		return await embedMessage(quote);
+	}
+	else {
+		return await embedImage(quote);
+	}
+
+}
+
+export const insertionFailed = (tag: string): EmbedBuilder => {
+	return new EmbedBuilder()
+	.setColor(0xbe2e1b)
+	.setDescription(`Tag \"${tag}\" already exists. Quote failed 😔`)
+}
+
+export const findFailed = (tag: string): EmbedBuilder => {
+	return new EmbedBuilder()
+	.setColor(0xbe2e1b)
+	.setDescription(`Tag \"${tag}\" not found. Retrieval failed 😱`)
+}
+
+const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
+	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
     const user: User | void = await embedClient.users.fetch(quote.user) //user can be void
         .catch((err: any) => console.log(err))
 	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
@@ -33,15 +56,15 @@ export const embedQuote = async (quote: QuoteDefault): Promise<EmbedBuilder> => 
 		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
 }
 
-export const insertionFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" already exists. Quote failed 😔`)
+const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
+	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
+        .catch((err: any) => console.log(err))
+	console.log(quote)
+    return new EmbedBuilder()
+		.setColor(0x6375a1)
+		.setTitle(quote.title)
+		.setDescription(` ${quote!.tag ? `\"${quote.tag}\"` : "None"}`)
+		.setImage(quote.link)
+		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
 }
-
-export const findFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" not found. Retrieval failed 😱`)
-}
-    
