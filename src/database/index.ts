@@ -40,23 +40,17 @@ export const getTagQuote = async (tag: string): Promise<QuoteDefault> => {
   return one[0];
 }
 
-export const updateTagQuote = async (tag: string, newtag: string, id: string): Promise<boolean> => {
+export const updateTagQuote = async (identifier: string, newtag: string, input: string): Promise<boolean> => {
   if (!db) await dbConnect();
   const temp = db.db("Default");
+  const discriminator = identifier === "tag" ? {tag: input} : {message: input};
 
-  let result = await temp.collection("quotes").updateOne({tag: tag}, {$set: {tag: newtag}})
+  let result = await temp.collection("quotes").updateOne(discriminator, {$set: {tag: newtag}})
     .catch((err: any) => {
       console.log(err);
       return false;
     })
-  console.log(result);
-  if (!result.modifiedCount) {
-    result = await temp.collection("quotes").updateOne({message: id}, {$set: {tag: newtag}})
-      .catch((err: any) => {
-        console.log(err);
-        return false;
-      })
-  }
+
 
   return result.modifiedCount ? true : false;
 }

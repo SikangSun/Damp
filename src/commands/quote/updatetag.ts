@@ -12,50 +12,45 @@ require('dotenv').config();
 const tagedit = new SlashCommandBuilder()
   .setName('updatetag')
   .setDescription('Loop up a quote and change its tag')
-  .addStringOption((option) =>
-  option
-    .setName('new_tag')
-    .setDescription('Enter the updated the tag')
-    .setMinLength(1)
-    .setMaxLength(20)
-    .setRequired(true)
-)
-  .addStringOption((option) =>
+    .addStringOption(option =>
+    option.setName('identifier')
+        .setDescription('Choose to look up by tag or message id here')
+        .setRequired(true)
+        .addChoices(
+            { name: "tag", value: "tag" },
+            { name: "message id", value: "id"},
+    ))
+    .addStringOption(option =>
+    option.setName('input')
+        .setDescription('Enter your tag or message id')
+        .setRequired(true)
+        .setMaxLength(30)
+        .setMinLength(1)
+    )
+    .addStringOption((option) =>
     option
-      .setName('old_tag')
-      .setDescription('Enter the tag for the quote you want to look up')
+      .setName('new_tag')
+      .setDescription('Enter the updated the tag')
       .setMinLength(1)
       .setMaxLength(20)
-      .setRequired(false)
-  )
-  .addStringOption((option) =>
-  option
-    .setName('message_id')
-    .setDescription('If there is no tag, enter the ID of the quote you want to look up')
-    .setMinLength(1)
-    .setMaxLength(30)
-    .setRequired(false)
-)
+      .setRequired(true)
+    )
 
 export default command(tagedit, async ({ interaction }) => {
     console.log("edit tag");
-    const tag: string = interaction.options.getString('old_tag')!;
-    const id: string = interaction.options.getString('message_id')!;
-    if (!tag && !id) {
-        return interaction.reply({
-            ephemeral: false,
-            embeds: [new EmbedBuilder().setColor(0x6375a1).setDescription(`Request failed: no tag and id`)]
-        })
-    }
-
+    const identifier: string = interaction.options.getString('identifier')!;
+    const input: string = interaction.options.getString('input')!;
     const newtag: string = interaction.options.getString('new_tag')!;
-    const result = await updateTagQuote(tag, newtag, id);
+
+    const result = await updateTagQuote(identifier, newtag, input);
     // console.log(quote)
-    if (!result) { //check tag uniqueness
+    if (!result) { //error
         return interaction.reply({
             ephemeral: false,
-            embeds: [findFailed(tag)]
-        })
+            embeds: [new EmbedBuilder()
+                .setColor(0xbe2e1b)
+                .setDescription(`Quote with ${ identifier === "tag" ? `tag ${input}` : `message id ${input}`} does not exist. Update failed`)],
+        });
 
     }
     
