@@ -60,3 +60,19 @@ export const updateTagQuote = async (tag: string, newtag: string, id: string): P
 
   return result.modifiedCount ? true : false;
 }
+
+export const deleteOneQuote = async (identifier: string, input: string): Promise<boolean> => {
+  if (!db) await dbConnect();
+  const temp = db.db("Default");
+  const discriminator = identifier === "tag" ? {tag: input} : {message: input};
+
+  let result = await temp.collection("quotes").deleteOne(discriminator)
+    .catch((err: any) => {
+      console.log(err);
+      return false;
+    })
+  // console.log(result);
+
+
+  return result.deletedCount ? true : false;
+}
