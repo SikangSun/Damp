@@ -1,17 +1,11 @@
+import { insertionFailed } from './../../utils/embed';
 import { QuoteDefault } from './../../types/quote';
-import { insertQuote } from '../../database/index';
+import { insertQuote, getTagQuote } from '../../database/index';
 import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
 import { command } from '../../utils'
 import { Client, GatewayIntentBits } from 'discord.js'
 
 require('dotenv').config();
-
-// let db: any
-const client = new Client({
-  intents: [
-    GatewayIntentBits.GuildMessages
-  ],
-})
 
 const quote = new SlashCommandBuilder()
   .setName('quote')
@@ -29,13 +23,24 @@ const quote = new SlashCommandBuilder()
       .setName('tag')
       .setDescription('Give an unique tag for this quote for look up later')
       .setMinLength(1)
-      .setMaxLength(15)
+      .setMaxLength(20)
       .setRequired(false)
   )
 
 export default command(quote, async ({ interaction }) => {
   const messageid: string = interaction.options.getString('messageid')!
   const tag: string = interaction.options.getString('tag')!
+
+  if (tag) { //checking tag uniqueness
+    const unique: QuoteDefault | undefined = await getTagQuote(tag);
+    if (unique) {
+      return interaction.reply({
+        ephemeral: false,
+        embeds: [insertionFailed(tag)]
+      })
+    }
+  }
+
   const guildId: string = interaction.guildId!
   const channelId: string = interaction.channelId!
   let Channel: any = await interaction.client.channels.fetch(channelId);

@@ -8,16 +8,19 @@ import { GatewayIntentBits } from 'discord.js';
 
 require('dotenv').config();
 
-const client = new Client({
-    intents: [
-        GatewayIntentBits.GuildMessages
-    ],
-  })
-
 
 const getall = new SlashCommandBuilder()
-  .setName('getquotes')
-  .setDescription('see all quotes.')
+  .setName('getallquotes')
+  .setDescription('see all quotes in this server.')
+//   .addBooleanOption((option) =>
+//     option
+//         .setName('tag')
+//         .setDescription('Give an unique tag for this quote for look up later')
+//         .setMinLength(1)
+//         .setMaxLength(15)
+//         .setRequired(false)
+//     )
+
 
 export default command(getall, async ({ interaction }) => {
     console.log("getall");
