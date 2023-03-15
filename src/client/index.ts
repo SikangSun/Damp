@@ -4,7 +4,7 @@ import { registerEvents } from '../utils'
 import events from '../events'
 import keys from '../keys'
 
-export const client = new Client({
+const client = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMembers,

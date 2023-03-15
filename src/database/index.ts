@@ -29,7 +29,14 @@ export const getAllQuotes = async () => {
   const temp = db.db("Default");
 
   const all = await temp.collection("quotes").find({}).toArray()
-  //console.log(all);
   return all;
+}
+
+export const getTagQuote = async (tag: string): Promise<QuoteDefault> => {
+  if (!db) await dbConnect();
+  const temp = db.db("Default");
+
+  const one: QuoteDefault[] = await temp.collection("quotes").find({tag: tag}).toArray()
+  return one[0];
 }
   
