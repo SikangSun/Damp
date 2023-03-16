@@ -74,7 +74,7 @@ export const deleteOneQuote = async (identifier: string, input: string, guildID:
   const temp = await initializeCollection(guildID);
   const discriminator = identifier === "tag" ? {tag: input} : {id: input};
 
-  let result = await temp.collection("quotes").deleteOne(discriminator)
+  let result = await temp.deleteOne(discriminator)
     .catch((err: any) => {
       console.log(err);
       return false;

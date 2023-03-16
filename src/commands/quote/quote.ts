@@ -46,13 +46,13 @@ export default command(quote, async ({ interaction }) => {
   let Channel: any = await interaction.client.channels.fetch(channelId);
   const message = await Channel!.messages.fetch(messageid);
   //console.log(message.author)
-   console.log(interaction)
- 
+  //  console.log(interaction)
+  
   const quoteObject: QuoteDefault = {
     id: 0,
     type: "message",
     content: <string>message.content,
-    timestamp: new Date(),
+    timestamp: message.createdAt,
     user: <string>message.author.id,
     message: messageid,
     channel: channelId,

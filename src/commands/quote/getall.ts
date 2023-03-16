@@ -1,5 +1,5 @@
 import { EmbedBuilder, Client } from 'discord.js';
-import { QuoteDefault } from './../../types/quote';
+import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { embedQuote } from './../../utils/embed';
 import { getAllQuotes } from './../../database/index';
 import { SlashCommandBuilder, InteractionWebhook } from 'discord.js';
@@ -30,7 +30,9 @@ export default command(getall, async ({ interaction }) => {
     ephemeral: true,
     content: `Here is all your quotes` 
 })
-
+    content.sort((a:QuoteDefault | QuoteImage, b: QuoteDefault | QuoteImage) => {
+      return a.timestamp < b.timestamp ? -1 : 1; 
+    })
     content.map(async (element: QuoteDefault) => {
         const example: EmbedBuilder = await embedQuote(element);
         await interaction.followUp({
