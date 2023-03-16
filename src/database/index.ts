@@ -17,7 +17,7 @@ export const dbConnect = async () => {
 const newServer = async (guildID: string): Promise<void> => {
   const collection = db.createCollection(guildID)
     .catch((err: any) => console.log(err));
-  await db.collection(guildID).insertOne({type: "sentinel", _id: 0, seq: 0})
+  await db.collection(guildID).insertOne({type: "sentinel", _id: 0, seq: 1})
 }
 
 const initializeCollection = async (guildID: string) => {
