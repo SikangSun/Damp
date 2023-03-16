@@ -10,7 +10,7 @@ require('dotenv').config();
 
 
 const getall = new SlashCommandBuilder()
-  .setName('getallquotes')
+  .setName('getall')
   .setDescription('see all quotes in this server.')
 //   .addBooleanOption((option) =>
 //     option
