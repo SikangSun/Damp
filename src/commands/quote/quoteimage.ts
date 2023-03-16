@@ -1,5 +1,6 @@
+import { InteractionReplyOptions } from 'discord.js';
 import { insertionFailed } from './../../utils/embed';
-import { QuoteDefault } from './../../types/quote';
+import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { insertQuote, getTagQuote } from '../../database/index';
 import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
 import { command } from '../../utils'
@@ -8,16 +9,24 @@ import { Client, GatewayIntentBits } from 'discord.js'
 require('dotenv').config();
 
 const quote = new SlashCommandBuilder()
-  .setName('quote')
-  .setDescription('quote your friends.')
+  .setName('quoteimage')
+  .setDescription('quote a link to an image.')
   .addStringOption((option) =>
     option
-      .setName('message_id')
-      .setDescription('Provide the bot with the ID of the message you want to quote.')
+      .setName('link')
+      .setDescription('Link to your image/gif (For Discord images, right click and press \"Copy Link\")')
       .setMinLength(1)
-      .setMaxLength(30)
+      .setMaxLength(150)
       .setRequired(true)
   )
+  .addStringOption((option) =>
+  option
+    .setName('title')
+    .setDescription('Gave this image a title')
+    .setMinLength(1)
+    .setMaxLength(50)
+    .setRequired(false)
+)
   .addStringOption((option) =>
     option
       .setName('tag')
@@ -28,7 +37,9 @@ const quote = new SlashCommandBuilder()
   )
 
 export default command(quote, async ({ interaction }) => {
-  const messageid: string = interaction.options.getString('message_id')!
+  console.log("Quote image");
+  const link: string = interaction.options.getString('link')!
+  const title: string = interaction.options.getString('title')!
   const tag: string = interaction.options.getString('tag')!
 
   if (tag) { //checking tag uniqueness
@@ -41,32 +52,25 @@ export default command(quote, async ({ interaction }) => {
     }
   }
 
-  const guildId: string = interaction.guildId!
-  const channelId: string = interaction.channelId!
-  let Channel: any = await interaction.client.channels.fetch(channelId);
-  const message = await Channel!.messages.fetch(messageid);
   //console.log(message.author)
-   console.log(interaction)
+  //console.log(interaction, "asdf")
  
-  const quoteObject: QuoteDefault = {
+  const quoteObject: QuoteImage = {
     id: 0,
-    type: "message",
-    content: <string>message.content,
+    type: "image",
+    link: link,
     timestamp: new Date(),
-    user: <string>message.author.id,
-    message: messageid,
-    channel: channelId,
-    guild: guildId,
+    guild: interaction.guildId!,
     quoter: interaction.user.id,
+    title: title,
     tag: tag
   };
   await insertQuote(quoteObject);
 
-  //console.log(`guildID:${typeof guildId}\nchannel:${channelId}`)
   
   return interaction.reply({
     ephemeral: false,
-    content: `"${quoteObject.content}" has been quoted 👌` 
+    content: `"${quoteObject.title}" has been quoted 👌` 
   })
 })
 

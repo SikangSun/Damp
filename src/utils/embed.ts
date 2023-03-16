@@ -1,5 +1,5 @@
 import { EmbedBuilder, Client, User, GatewayIntentBits } from 'discord.js';
-import { QuoteDefault } from './../types/quote';
+import { QuoteDefault, QuoteImage } from './../types/quote';
 import keys from '../keys'
 import date from 'date-and-time';
 
@@ -17,20 +17,15 @@ const embedClient = new Client({
   })
 
 
-export const embedQuote = async (quote: QuoteDefault): Promise<EmbedBuilder> => {
-    const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
-    const user: User | void = await embedClient.users.fetch(quote.user) //user can be void
-        .catch((err: any) => console.log(err))
-	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
-        .catch((err: any) => console.log(err))
+export const embedQuote = async (quote: QuoteDefault | QuoteImage): Promise<EmbedBuilder> => {
 
-    return new EmbedBuilder()
-		.setColor(0x6375a1)
-		.setAuthor({ name: `${user?.username} said:`, iconURL: user?.avatarURL()!})
-		.setDescription(`${quote.content ? quote.content :"<Empty>"}`)
-		//.addFields([{ name: 'ID', value: `${quote!.message}`, inline: true }, {name: 'Tag', value: `${quote!.tag ? `\"${quote.tag}\"` : "None"}`, inline: true}])
-		.setThumbnail(user?.avatarURL()!)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
+	if (quote.type === "message") {
+		return await embedMessage(quote);
+	}
+	else {
+		return await embedImage(quote);
+	}
+
 }
 
 export const insertionFailed = (tag: string): EmbedBuilder => {
@@ -44,4 +39,32 @@ export const findFailed = (tag: string): EmbedBuilder => {
 	.setColor(0xbe2e1b)
 	.setDescription(`Tag \"${tag}\" not found. Retrieval failed 😱`)
 }
-    
+
+const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
+	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+    const user: User | void = await embedClient.users.fetch(quote.user) //user can be void
+        .catch((err: any) => console.log(err))
+	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
+        .catch((err: any) => console.log(err))
+
+    return new EmbedBuilder()
+		.setColor(0x6375a1)
+		.setAuthor({ name: `${user?.username}`, iconURL: user?.avatarURL()!})
+		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
+		.setFields([{name: "⠀", value: `- ${time}`}])
+		.setThumbnail(user?.avatarURL()!)
+		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+}
+
+const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
+	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
+        .catch((err: any) => console.log(err))
+
+    return new EmbedBuilder()
+		.setColor(0x6375a1)
+		.setTitle(quote.title)
+		.setDescription(`${time} `)
+		.setImage(quote.link)
+		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+}

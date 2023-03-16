@@ -10,7 +10,7 @@ require('dotenv').config();
 
 
 const getone = new SlashCommandBuilder()
-  .setName('getone')
+  .setName('getquote')
   .setDescription('find quote by tag or id')
   .addStringOption((option) =>
     option
@@ -26,7 +26,7 @@ export default command(getone, async ({ interaction }) => {
     console.log("getone");
     const tag: string = interaction.options.getString('tag')!
 
-    const quote = await getTagQuote(tag);
+    const quote = await getTagQuote(tag, interaction.guildId!);
     // console.log(quote)
     if (quote) {
         const embed: EmbedBuilder = await embedQuote(quote);
