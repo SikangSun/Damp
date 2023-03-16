@@ -9,43 +9,58 @@ export const dbConnect = async () => {
     await MongoClient.connect(process.env.MONGODB_URL!, {})
     .then(
     (database?:any) => {
-      db = database;
+      db = database.db("Default");
     })
     .catch(console.error)
   }
-  
-export const insertQuote = async ( quote: QuoteDefault | QuoteImage): Promise<void> => {
-  if (!db) await dbConnect();
-  const temp = db.db("Default");
 
-  await temp.collection("quotes").insertOne(quote)
+const newServer = async (guildID: string): Promise<void> => {
+  const collection = db.createCollection(guildID)
+    .catch((err: any) => console.log(err));
+  await db.collection(guildID).insertOne({type: "sentinel", _id: 0, seq: 0})
+}
+
+const initializeCollection = async (guildID: string) => {
+  if (!db) await dbConnect();
+  const collectionArray = await db.listCollections().toArray();
+  const exist = collectionArray.some((collection: any) => collection.name === guildID)
+
+  if (!exist) {
+    newServer(guildID);
+  }
+  return db.collection(guildID);
+}
+
+export const insertQuote = async ( quote: QuoteDefault | QuoteImage): Promise<void> => {
+  const temp = await initializeCollection(quote.guild);
+
+  quote.id = await getNextSequence(quote.guild);
+  await temp.insertOne(quote)
   .catch((err: any) => console.log(err))
   console.log("Inserted Quote");
   return;
 }
 
-export const getAllQuotes = async () => {
-  if (!db) await dbConnect();
-  const temp = db.db("Default");
+export const getAllQuotes = async (guildID: string) => {
+  const temp = await initializeCollection(guildID);
 
-  const all = await temp.collection("quotes").find({}).toArray()
+  const all = await temp.find({ type: { $ne: 'sentinel' }}).toArray()
   return all;
 }
 
-export const getTagQuote = async (tag: string): Promise<QuoteDefault> => {
-  if (!db) await dbConnect();
-  const temp = db.db("Default");
+export const getTagQuote = async (tag: string, guildID: string): Promise<QuoteDefault> => {
+  const temp = await initializeCollection(guildID);
 
-  const one: QuoteDefault[] = await temp.collection("quotes").find({tag: tag}).toArray()
-  return one[0];
+  const oneQuote: QuoteDefault[] = await temp.find({tag: tag}).toArray()
+  return oneQuote[0];
 }
 
-export const updateTagQuote = async (identifier: string, newtag: string, input: string): Promise<boolean> => {
-  if (!db) await dbConnect();
-  const temp = db.db("Default");
-  const discriminator = identifier === "tag" ? {tag: input} : {message: input};
+export const updateTagQuote = async (identifier: string, newtag: string, input: string, guildID: string): Promise<boolean> => {
+  const temp = await initializeCollection(guildID);
 
-  let result = await temp.collection("quotes").updateOne(discriminator, {$set: {tag: newtag}})
+  const discriminator = identifier === "tag" ? {tag: input} : {id: input};
+
+  let result = await temp.updateOne(discriminator, {$set: {tag: newtag}})
     .catch((err: any) => {
       console.log(err);
       return false;
@@ -55,18 +70,24 @@ export const updateTagQuote = async (identifier: string, newtag: string, input: 
   return result.modifiedCount ? true : false;
 }
 
-export const deleteOneQuote = async (identifier: string, input: string): Promise<boolean> => {
-  if (!db) await dbConnect();
-  const temp = db.db("Default");
-  const discriminator = identifier === "tag" ? {tag: input} : {message: input};
+export const deleteOneQuote = async (identifier: string, input: string, guildID: string): Promise<boolean> => {
+  const temp = await initializeCollection(guildID);
+  const discriminator = identifier === "tag" ? {tag: input} : {id: input};
 
   let result = await temp.collection("quotes").deleteOne(discriminator)
     .catch((err: any) => {
       console.log(err);
       return false;
     })
-  // console.log(result);
-
 
   return result.deletedCount ? true : false;
+}
+
+const getNextSequence = async (guildID: string): Promise<number> => {
+  const ret = await db.collection(guildID).findOneAndUpdate(
+         { _id: 0 },
+         { $inc: { seq: 1 } },
+         { new: true}
+  );
+  return ret.value.seq;
 }

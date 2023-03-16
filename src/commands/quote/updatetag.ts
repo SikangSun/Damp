@@ -14,15 +14,15 @@ const tagedit = new SlashCommandBuilder()
   .setDescription('Loop up a quote and change its tag')
     .addStringOption(option =>
     option.setName('identifier')
-        .setDescription('Choose to look up by tag or message id here')
+        .setDescription('Choose to look up by tag or id here')
         .setRequired(true)
         .addChoices(
             { name: "tag", value: "tag" },
-            { name: "message id", value: "id"},
+            { name: "id", value: "id"},
     ))
     .addStringOption(option =>
     option.setName('input')
-        .setDescription('Enter your tag or message id')
+        .setDescription('Enter your tag or id')
         .setRequired(true)
         .setMaxLength(30)
         .setMinLength(1)
@@ -42,7 +42,7 @@ export default command(tagedit, async ({ interaction }) => {
     const input: string = interaction.options.getString('input')!;
     const newtag: string = interaction.options.getString('new_tag')!;
 
-    const result = await updateTagQuote(identifier, newtag, input);
+    const result = await updateTagQuote(identifier, newtag, input, interaction.guildId!);
     // console.log(quote)
     if (!result) { //error
         return interaction.reply({

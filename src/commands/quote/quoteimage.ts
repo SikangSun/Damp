@@ -1,3 +1,4 @@
+import { InteractionReplyOptions } from 'discord.js';
 import { insertionFailed } from './../../utils/embed';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { insertQuote, getTagQuote } from '../../database/index';
@@ -13,7 +14,7 @@ const quote = new SlashCommandBuilder()
   .addStringOption((option) =>
     option
       .setName('link')
-      .setDescription('Link to your image (For Discord images, right click and press \"Copy Link\")')
+      .setDescription('Link to your image/gif (For Discord images, right click and press \"Copy Link\")')
       .setMinLength(1)
       .setMaxLength(150)
       .setRequired(true)
@@ -36,12 +37,13 @@ const quote = new SlashCommandBuilder()
   )
 
 export default command(quote, async ({ interaction }) => {
+  console.log("Quote image");
   const link: string = interaction.options.getString('link')!
   const title: string = interaction.options.getString('title')!
   const tag: string = interaction.options.getString('tag')!
 
   if (tag) { //checking tag uniqueness
-    const unique: QuoteDefault | undefined = await getTagQuote(tag);
+    const unique: QuoteDefault | undefined = await getTagQuote(tag, interaction.guildId!);
     if (unique) {
       return interaction.reply({
         ephemeral: false,
@@ -54,9 +56,11 @@ export default command(quote, async ({ interaction }) => {
   //console.log(interaction, "asdf")
  
   const quoteObject: QuoteImage = {
+    id: 0,
     type: "image",
     link: link,
     timestamp: new Date(),
+    guild: interaction.guildId!,
     quoter: interaction.user.id,
     title: title,
     tag: tag

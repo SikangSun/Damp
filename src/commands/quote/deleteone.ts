@@ -14,15 +14,15 @@ const deleteone = new SlashCommandBuilder()
   .setDescription('Delete quote by tag or id')
   .addStringOption(option =>
     option.setName('identifier')
-        .setDescription('Choose to look up by tag or message id here')
+        .setDescription('Choose to look up by tag or id here')
         .setRequired(true)
         .addChoices(
             { name: "tag", value: "tag" },
-            { name: "message id", value: "id"},
+            { name: "id", value: "id"},
     ))
     .addStringOption(option =>
 		option.setName('input')
-			.setDescription('Enter your tag or message id')
+			.setDescription('Enter your tag or id')
 			.setRequired(true)
             .setMaxLength(30)
             .setMinLength(1)
@@ -33,9 +33,9 @@ export default command(deleteone, async ({ interaction }) => {
     const identifier: string = interaction.options.getString('identifier')!
     const input: string = interaction.options.getString('input')!
 
-    const quote = await deleteOneQuote(identifier, input);
+    const quote = await deleteOneQuote(identifier, input, interaction.guildId!);
     // console.log(quote)
-    
+
     if (quote) {
         return interaction.reply({
             ephemeral: false,

@@ -32,7 +32,7 @@ export default command(quote, async ({ interaction }) => {
   const tag: string = interaction.options.getString('tag')!
 
   if (tag) { //checking tag uniqueness
-    const unique: QuoteDefault | undefined = await getTagQuote(tag);
+    const unique: QuoteDefault | undefined = await getTagQuote(tag, interaction.guildId!);
     if (unique) {
       return interaction.reply({
         ephemeral: false,
@@ -49,6 +49,7 @@ export default command(quote, async ({ interaction }) => {
    console.log(interaction)
  
   const quoteObject: QuoteDefault = {
+    id: 0,
     type: "message",
     content: <string>message.content,
     timestamp: new Date(),

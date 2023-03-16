@@ -24,17 +24,17 @@ const getall = new SlashCommandBuilder()
 
 export default command(getall, async ({ interaction }) => {
     console.log("getall");
-    const content: any = await getAllQuotes();
+    const content: any = await getAllQuotes(interaction.guildId!);
 
   await interaction.reply({
-    ephemeral: false,
+    ephemeral: true,
     content: `Here is all your quotes` 
 })
 
     content.map(async (element: QuoteDefault) => {
         const example: EmbedBuilder = await embedQuote(element);
         await interaction.followUp({
-            ephemeral: false,
+            ephemeral: true,
             embeds: [example],
         })
     });

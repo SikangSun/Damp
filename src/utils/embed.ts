@@ -49,22 +49,22 @@ const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 
     return new EmbedBuilder()
 		.setColor(0x6375a1)
-		.setAuthor({ name: `${user?.username} said:`, iconURL: user?.avatarURL()!})
-		.setDescription(`${quote.content ? quote.content :"<Empty>"}`)
-		.addFields([{ name: 'ID', value: `${quote!.message}`, inline: true }, {name: 'Tag', value: `${quote!.tag ? `\"${quote.tag}\"` : "None"}`, inline: true}])
+		.setAuthor({ name: `${user?.username}`, iconURL: user?.avatarURL()!})
+		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
+		.setFields([{name: "⠀", value: `- ${time}`}])
 		.setThumbnail(user?.avatarURL()!)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
+		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
 }
 
 const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
 	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
 	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
         .catch((err: any) => console.log(err))
-	console.log(quote)
+
     return new EmbedBuilder()
 		.setColor(0x6375a1)
 		.setTitle(quote.title)
-		.setDescription(` ${quote!.tag ? `\"${quote.tag}\"` : "None"}`)
+		.setDescription(`${time} `)
 		.setImage(quote.link)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${time}`,  iconURL: quoter?.avatarURL()!});
+		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
 }
