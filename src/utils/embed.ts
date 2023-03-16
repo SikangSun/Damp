@@ -41,7 +41,7 @@ export const findFailed = (tag: string): EmbedBuilder => {
 }
 
 const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
-	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+	const time = `<t:${Math.floor(quote.timestamp.valueOf()/1000)}:f>`
     const user: User | void = await embedClient.users.fetch(quote.user) //user can be void
         .catch((err: any) => console.log(err))
 	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
@@ -51,20 +51,20 @@ const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 		.setColor(0x6375a1)
 		.setAuthor({ name: `${user?.username}`, iconURL: user?.avatarURL()!})
 		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
-		.setFields([{name: "⠀", value: `- ${time}`}])
+		.setFields([{name: "⠀", value: time }])
 		.setThumbnail(user?.avatarURL()!)
 		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
 }
 
 const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
-	const time = date.format(quote.timestamp, 'MM/DD/YY HH:mmA');
+	const time = `<t:${Math.floor(quote.timestamp.valueOf()/1000)}:f>`
 	const quoter: User | void = await embedClient.users.fetch(quote.quoter) //user can be void
         .catch((err: any) => console.log(err))
 
     return new EmbedBuilder()
 		.setColor(0x6375a1)
 		.setTitle(quote.title)
-		.setDescription(`${time} `)
+		.setDescription(time)
 		.setImage(quote.link)
 		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
 }
