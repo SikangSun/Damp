@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client } from 'discord.js';
-import { updateTagQuote } from './../../database';
+import { updateTagQuote, getQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
-import { command, idOrTag, embedQuote, findFailed } from '../../utils';
+import { command, idOrTag, embedQuote, updateFailed, validTag } from '../../utils';
 
 require('dotenv').config();
 
@@ -27,19 +27,26 @@ const tagedit = new SlashCommandBuilder()
 
 export default command(tagedit, async ({ interaction }) => {
     console.log("edit tag");
-    const input: string = interaction.options.getString('input')!;
+    const input: string = interaction.options.getString('tag_or_id')!;
     const newtag: string = interaction.options.getString('new_tag')!;
+    
+    let unique: any = "";
+    if (validTag(newtag)) {//valid tag, check distinct
+        unique = await getQuote(newtag, interaction.guildId!)
+                        .catch((err: any) => {return updateFailed(interaction, input, 105);})
+    }
+    else {//ambiguous tag
+        return updateFailed(interaction, newtag, 103);
+    }
+    if (unique) {//not distinct
+      return updateFailed(interaction, newtag, 101)
+    }
     const idTag: string = idOrTag(input);
-    const result = await updateTagQuote(idTag, newtag, input, interaction.guildId!);
-    // console.log(quote)
-    if (!result) { //error
-        return interaction.reply({
-            ephemeral: false,
-            embeds: [new EmbedBuilder()
-                .setColor(0xbe2e1b)
-                .setDescription(`Quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`} does not exist. Update failed`)],
-        });
+    const result = await updateTagQuote(idTag, newtag, input, interaction.guildId!)
+        .catch((err: any) => {return updateFailed(interaction, input, 105)})
 
+    if (!result) { //error
+        return updateFailed(interaction, input, 104);
     }
     
     return interaction.reply({

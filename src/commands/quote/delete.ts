@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client, SelectMenuInteraction } from 'discord.js';
-import { deleteOneQuote } from './../../database/index';
+import { deleteOneQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
-import { command, idOrTag, embedQuote, findFailed } from '../../utils';
+import { command, idOrTag, embedQuote, deleteFailed } from '../../utils';
 
 require('dotenv').config();
 
@@ -21,19 +21,17 @@ export default command(deleteone, async ({ interaction }) => {
     console.log("delete");
     const input: string = interaction.options.getString('input')!
     const identifier = idOrTag(input);
-    const quote = await deleteOneQuote(identifier, input, interaction.guildId!);
+    const quote = await deleteOneQuote(identifier, input, interaction.guildId!)
+        .catch(err => {
+            return deleteFailed(interaction, input, 105);
+        })
 
-    if (quote) {
-        return interaction.reply({
-            ephemeral: false,
-            embeds: [new EmbedBuilder().setColor(0x49be25).setDescription(`Your quote \"${input}\" has been deleted!`)],
-        });
+    if (!quote) {
+        return deleteFailed(interaction, input, 102);
     }
     
     return interaction.reply({
         ephemeral: false,
-        embeds: [new EmbedBuilder()
-            .setColor(0xbe2e1b)
-            .setDescription(`Quote with ${ identifier === "tag" ? `tag ${input}` : `id ${input}`} does not exist. Delete failed`)],
+        embeds: [new EmbedBuilder().setColor(0x49be25).setDescription(`Your quote \"${input}\" has been deleted!`)],
     });
 })

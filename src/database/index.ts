@@ -54,7 +54,7 @@ export const getQuote = async (input: string, guildID: string): Promise<QuoteDef
 
 export const updateTagQuote = async (identifier: string, newtag: string, input: string, guildID: string): Promise<boolean> => {
   const temp = await initializeCollection(guildID);
-  const discriminator = identifier === "tag" ? {tag: input} : {id: input};
+  const discriminator = idOrTag(input) === "tag" ? {tag: input} : {id: input};
   let result = await temp.updateOne(discriminator, {$set: {tag: newtag}})
     .catch((err: any) => {console.log(err);return false;})
   return result.modifiedCount ? true : false;
@@ -63,7 +63,7 @@ export const updateTagQuote = async (identifier: string, newtag: string, input: 
 
 export const deleteOneQuote = async (identifier: string, input: string, guildID: string): Promise<boolean> => {
   const temp = await initializeCollection(guildID);
-  const discriminator = identifier === "tag" ? {tag: input} : {id: input};
+  const discriminator = idOrTag(input) === "tag" ? {tag: input} : {id: Number(input)}
   let result = await temp.deleteOne(discriminator)
     .catch((err: any) => { console.log(err); return false;})
   return result.deletedCount ? true : false;

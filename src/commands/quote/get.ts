@@ -63,6 +63,9 @@ const all = async (interaction: ChatInputCommandInteraction) => {
     console.log("getall");
     const content: any = await getAllQuotes(interaction.guildId!);
 
+    if (content.length == 0) {
+        return findFailed(interaction, "", 102);
+    }
     await interaction.reply(
         {
             ephemeral: true,

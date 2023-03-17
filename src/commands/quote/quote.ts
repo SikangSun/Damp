@@ -138,6 +138,11 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   const title: string = interaction.options.getString('title')!
   const tag: string = interaction.options.getString('tag')!
 
+  
+  if (!validTag(tag)) {
+    return insertionFailed(interaction, tag, 102);
+  }
+
   let unique: any;
   if (tag) { //checking tag uniqueness
     unique = await getQuote(tag, interaction.guildId!);
