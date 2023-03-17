@@ -1,14 +1,12 @@
 import { QuoteImage } from './../../types/quote';
 import { category } from '../../utils'
 import quote from './quote'
-import getall from "./getall"
-import getone from "./getone"
-import tagedit from "./updatetag"
-import deleteone from "./deleteone"
-import quoteimage from "./quoteimage"
+import getone from "./get"
+import tagedit from "./update"
+import deleteone from "./delete"
 
 export default category('quote', [
-  quote, getall, getone, tagedit, deleteone, quoteimage
+  quote, getone, tagedit, deleteone
 ])
 
 

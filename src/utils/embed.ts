@@ -12,8 +12,8 @@ const embedClient = new Client({
 
   embedClient.login(keys.clientToken)
   .catch((err: any) => {
-    console.error('[Login Error]', err)
-    process.exit(1)
+    console.error('[Login Error]', err);
+    process.exit(1);
   })
 
 
@@ -28,17 +28,6 @@ export const embedQuote = async (quote: QuoteDefault | QuoteImage): Promise<Embe
 
 }
 
-export const insertionFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" already exists. Quote failed 😔`)
-}
-
-export const findFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" not found. Retrieval failed 😱`)
-}
 
 const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 	const time = `<t:${Math.floor(quote.timestamp.valueOf()/1000)}:f>`
@@ -49,11 +38,11 @@ const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 
     return new EmbedBuilder()
 		.setColor(0x6375a1)
-		.setAuthor({ name: `${user?.username}`, iconURL: user?.avatarURL()!})
+		.setAuthor({ name: `${user?.username} said:`, iconURL: user?.displayAvatarURL()!})
 		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
 		.setFields([{name: "⠀", value: time }])
-		.setThumbnail(user?.avatarURL()!)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+		.setThumbnail(user?.displayAvatarURL()!)
+		.setFooter({ text: `Quoted @${quoter!.username} • ID ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "No Tag"}`,  iconURL: quoter?.avatarURL()!});
 }
 
 const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
@@ -66,5 +55,5 @@ const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
 		.setTitle(quote.title)
 		.setDescription(time)
 		.setImage(quote.link)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+		.setFooter({ text: `Quoted @${quoter!.username} • ID ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "No Tag"}`,  iconURL: quoter?.avatarURL()!});
 }

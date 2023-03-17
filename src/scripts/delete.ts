@@ -10,7 +10,7 @@ const rest = new REST({ version: '10' }).setToken(keys.clientToken)
 
 const deleteCommands = async () => {
     const currentUser = await rest.get(Routes.user()) as APIUser
-    const endpoint = await rest.put(Routes.applicationGuildCommands(currentUser.id, "886789851016462346"), { body: [] })
+    const endpoint = await rest.put(Routes.applicationCommands(currentUser.id), { body: [] })
     console.log(endpoint)
     // rest.delete(Routes.applicationCommand(currentUser.id, commandid))
 	// .then(() => console.log('Successfully deleted application command'))
