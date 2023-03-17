@@ -81,7 +81,7 @@ const message = async (interaction: ChatInputCommandInteraction) => {
   const messageid: string = interaction.options.getString('message_id')!
   const tag: string = interaction.options.getString('tag')!
 
-  if (!validTag(tag)) {
+  if (tag && !validTag(tag)) {
     return insertionFailed(interaction, tag, 102);
   }
 
@@ -139,7 +139,7 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   const tag: string = interaction.options.getString('tag')!
 
   
-  if (!validTag(tag)) {
+  if (tag && !validTag(tag)) {
     return insertionFailed(interaction, tag, 102);
   }
 
@@ -168,7 +168,7 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   .catch((err: any) => {
     return insertionFailed(interaction, tag, 105);
   })
-
+ 
   return interaction.reply({
     ephemeral: false,
     content: `"${quoteObject.tag}" has been quoted 👌` 

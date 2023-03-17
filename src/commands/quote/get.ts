@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { getAllQuotes, getQuote } from './../../database/index';
-import { command, embedQuote, findFailed, idOrTag  } from '../../utils';
+import { command, embedQuote, findFailed, idOrTag, Reply  } from '../../utils';
 import { GatewayIntentBits } from 'discord.js';
 
 require('dotenv').config();

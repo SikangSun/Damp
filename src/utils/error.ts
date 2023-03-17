@@ -1,5 +1,6 @@
 import { EmbedBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { idOrTag } from "./validation"
+import { Reply } from "./replies"
 
 export const insertionFailed = (interaction: ChatInputCommandInteraction, tag: string, errCode: number) => {
     let errMsg: string = "";
@@ -22,15 +23,7 @@ export const insertionFailed = (interaction: ChatInputCommandInteraction, tag: s
         default:
             errMsg = "Quote failed, please try again later"
     }
-    const embed = new EmbedBuilder()
-        .setColor(0xbe2e1b)
-        .setDescription(errMsg)
-    console.log(`Insertion error ${errCode}`)
-    return interaction.reply({
-        ephemeral: true,
-        embeds: [embed]
-      })
-
+    interaction.reply(Reply.error(errMsg));
 }
 
 export const findFailed = (interaction: ChatInputCommandInteraction, tag: string, errCode: number) => {
@@ -48,15 +41,7 @@ export const findFailed = (interaction: ChatInputCommandInteraction, tag: string
         default:
             errMsg = "Get failed, please try again later"
     }
-    const embed = new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(errMsg)
-
-    console.log(`Find error ${errCode}`)
-    return interaction.reply({
-        ephemeral: true,
-        embeds: [embed]
-      })
+    interaction.reply(Reply.error(errMsg));
 }
 
 
@@ -83,15 +68,7 @@ export const updateFailed = (interaction: ChatInputCommandInteraction, input: st
         default:
             errMsg = "Update failed, please try again later"
     }
-    const embed = new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(errMsg)
-
-    console.log(`Find error ${errCode}`)
-    return interaction.reply({
-        ephemeral: true,
-        embeds: [embed]
-      })
+    interaction.reply(Reply.error(errMsg));
 }
 
 
@@ -108,13 +85,5 @@ export const deleteFailed = (interaction: ChatInputCommandInteraction, input: st
         default:
             errMsg = "Update failed, please try again later"
     }
-    const embed = new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(errMsg)
-
-    console.log(`Find error ${errCode}`)
-    return interaction.reply({
-        ephemeral: true,
-        embeds: [embed]
-      })
+    interaction.reply(Reply.error(errMsg));
 }

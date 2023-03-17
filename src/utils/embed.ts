@@ -38,10 +38,10 @@ const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 
     return new EmbedBuilder()
 		.setColor(0x6375a1)
-		.setAuthor({ name: `${user?.username}`, iconURL: user?.avatarURL()!})
+		.setAuthor({ name: `${user?.username} said:`, iconURL: user?.displayAvatarURL()!})
 		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
 		.setFields([{name: "⠀", value: time }])
-		.setThumbnail(user?.avatarURL()!)
+		.setThumbnail(user?.displayAvatarURL()!)
 		.setFooter({ text: `Quoted @${quoter!.username} • ID ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "No Tag"}`,  iconURL: quoter?.avatarURL()!});
 }
 
