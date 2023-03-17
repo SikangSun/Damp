@@ -1,3 +1,4 @@
+import { idOrTag } from './../../utils/validation';
 import { EmbedBuilder, Client } from 'discord.js';
 import { QuoteDefault } from './../../types/quote';
 import { embedQuote, findFailed } from './../../utils/embed';
@@ -10,18 +11,10 @@ require('dotenv').config();
 
 
 const tagedit = new SlashCommandBuilder()
-  .setName('updatetag')
-  .setDescription('Loop up a quote and change its tag')
+  .setName('tag')
+  .setDescription('Look up a quote and change its tag')
     .addStringOption(option =>
-    option.setName('identifier')
-        .setDescription('Choose to look up by tag or id here')
-        .setRequired(true)
-        .addChoices(
-            { name: "tag", value: "tag" },
-            { name: "id", value: "id"},
-    ))
-    .addStringOption(option =>
-    option.setName('input')
+    option.setName('tag_or_id')
         .setDescription('Enter your tag or id')
         .setRequired(true)
         .setMaxLength(30)
@@ -38,24 +31,23 @@ const tagedit = new SlashCommandBuilder()
 
 export default command(tagedit, async ({ interaction }) => {
     console.log("edit tag");
-    const identifier: string = interaction.options.getString('identifier')!;
     const input: string = interaction.options.getString('input')!;
     const newtag: string = interaction.options.getString('new_tag')!;
-
-    const result = await updateTagQuote(identifier, newtag, input, interaction.guildId!);
+    const idTag: string = idOrTag(input);
+    const result = await updateTagQuote(idTag, newtag, input, interaction.guildId!);
     // console.log(quote)
     if (!result) { //error
         return interaction.reply({
             ephemeral: false,
             embeds: [new EmbedBuilder()
                 .setColor(0xbe2e1b)
-                .setDescription(`Quote with ${ identifier === "tag" ? `tag ${input}` : `message id ${input}`} does not exist. Update failed`)],
+                .setDescription(`Quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`} does not exist. Update failed`)],
         });
 
     }
     
     return interaction.reply({
         ephemeral: false,
-        embeds: [new EmbedBuilder().setColor(0x49be25).setDescription(`Your tag has been updated!`)],
+        embeds: [new EmbedBuilder().setColor(0x49be25).setDescription(`Quote \"${input}\" is now tagged as \"${newtag}\"`)],
     });
 })

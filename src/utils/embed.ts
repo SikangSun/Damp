@@ -53,7 +53,7 @@ const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 		.setDescription(`>>> ${quote.content ? quote.content :"<Empty>"}`)
 		.setFields([{name: "⠀", value: time }])
 		.setThumbnail(user?.avatarURL()!)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+		.setFooter({ text: `Quoted @${quoter!.username} • ID ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "No Tag"}`,  iconURL: quoter?.avatarURL()!});
 }
 
 const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
@@ -66,5 +66,5 @@ const embedImage = async (quote: QuoteImage) : Promise<EmbedBuilder> => {
 		.setTitle(quote.title)
 		.setDescription(time)
 		.setImage(quote.link)
-		.setFooter({ text: `Quoted @${quoter!.username} • ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "None"}`,  iconURL: quoter?.avatarURL()!});
+		.setFooter({ text: `Quoted @${quoter!.username} • ID ${quote!.id} • ${quote!.tag ? `Tagged as \"${quote.tag}\"` : "No Tag"}`,  iconURL: quoter?.avatarURL()!});
 }

@@ -1,76 +1,76 @@
-import { InteractionReplyOptions } from 'discord.js';
-import { insertionFailed } from './../../utils/embed';
-import { QuoteDefault, QuoteImage } from './../../types/quote';
-import { insertQuote, getTagQuote } from '../../database/index';
-import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
-import { command } from '../../utils'
-import { Client, GatewayIntentBits } from 'discord.js'
+// import { InteractionReplyOptions } from 'discord.js';
+// import { insertionFailed } from './../../utils/embed';
+// import { QuoteDefault, QuoteImage } from './../../types/quote';
+// import { insertQuote, getTagQuote } from '../../database/index';
+// import { SlashCommandBuilder, InteractionWebhook } from 'discord.js'
+// import { command } from '../../utils'
+// import { Client, GatewayIntentBits } from 'discord.js'
 
-require('dotenv').config();
+// require('dotenv').config();
 
-const quote = new SlashCommandBuilder()
-  .setName('quoteimage')
-  .setDescription('quote a link to an image.')
-  .addStringOption((option) =>
-    option
-      .setName('link')
-      .setDescription('Link to your image/gif (For Discord images, right click and press \"Copy Link\")')
-      .setMinLength(1)
-      .setMaxLength(150)
-      .setRequired(true)
-  )
-  .addStringOption((option) =>
-  option
-    .setName('title')
-    .setDescription('Gave this image a title')
-    .setMinLength(1)
-    .setMaxLength(50)
-    .setRequired(false)
-)
-  .addStringOption((option) =>
-    option
-      .setName('tag')
-      .setDescription('Give an unique tag for this quote for look up later')
-      .setMinLength(1)
-      .setMaxLength(20)
-      .setRequired(false)
-  )
+// const quote = new SlashCommandBuilder()
+//   .setName('quoteimage')
+//   .setDescription('quote a link to an image.')
+//   .addStringOption((option) =>
+//     option
+//       .setName('link')
+//       .setDescription('Link to your image/gif (For Discord images, right click and press \"Copy Link\")')
+//       .setMinLength(1)
+//       .setMaxLength(150)
+//       .setRequired(true)
+//   )
+//   .addStringOption((option) =>
+//   option
+//     .setName('title')
+//     .setDescription('Gave this image a title')
+//     .setMinLength(1)
+//     .setMaxLength(50)
+//     .setRequired(false)
+// )
+//   .addStringOption((option) =>
+//     option
+//       .setName('tag')
+//       .setDescription('Give an unique tag for this quote for look up later')
+//       .setMinLength(1)
+//       .setMaxLength(20)
+//       .setRequired(false)
+//   )
 
-export default command(quote, async ({ interaction }) => {
-  console.log("Quote image");
-  const link: string = interaction.options.getString('link')!
-  const title: string = interaction.options.getString('title')!
-  const tag: string = interaction.options.getString('tag')!
+// export default command(quote, async ({ interaction }) => {
+//   console.log("Quote image");
+//   const link: string = interaction.options.getString('link')!
+//   const title: string = interaction.options.getString('title')!
+//   const tag: string = interaction.options.getString('tag')!
 
-  if (tag) { //checking tag uniqueness
-    const unique: QuoteDefault | undefined = await getTagQuote(tag, interaction.guildId!);
-    if (unique) {
-      return interaction.reply({
-        ephemeral: false,
-        embeds: [insertionFailed(tag)]
-      })
-    }
-  }
+//   if (tag) { //checking tag uniqueness
+//     const unique: QuoteDefault | undefined = await getTagQuote(tag, interaction.guildId!);
+//     if (unique) {
+//       return interaction.reply({
+//         ephemeral: false,
+//         embeds: [insertionFailed(tag)]
+//       })
+//     }
+//   }
 
-  //console.log(message.author)
-  //console.log(interaction, "asdf")
+//   //console.log(message.author)
+//   //console.log(interaction, "asdf")
  
-  const quoteObject: QuoteImage = {
-    id: 0,
-    type: "image",
-    link: link,
-    timestamp: new Date(),
-    guild: interaction.guildId!,
-    quoter: interaction.user.id,
-    title: title,
-    tag: tag
-  };
-  await insertQuote(quoteObject);
+//   const quoteObject: QuoteImage = {
+//     id: 0,
+//     type: "image",
+//     link: link,
+//     timestamp: new Date(),
+//     guild: interaction.guildId!,
+//     quoter: interaction.user.id,
+//     title: title,
+//     tag: tag
+//   };
+//   await insertQuote(quoteObject);
 
   
-  return interaction.reply({
-    ephemeral: false,
-    content: `"${quoteObject.title}" has been quoted 👌` 
-  })
-})
+//   return interaction.reply({
+//     ephemeral: false,
+//     content: `"${quoteObject.title}" has been quoted 👌` 
+//   })
+// })
 
