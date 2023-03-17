@@ -61,7 +61,8 @@ const one = async (interaction: ChatInputCommandInteraction) => {
 
 const all = async (interaction: ChatInputCommandInteraction) => {
     console.log("getall");
-    const content: any = await getAllQuotes(interaction.guildId!);
+    const content: any = await getAllQuotes(interaction.guildId!)
+        .catch((err: any) => {console.log(err); return findFailed(interaction, "", 105)})
 
     if (content.length == 0) {
         return findFailed(interaction, "", 102);
@@ -75,16 +76,24 @@ const all = async (interaction: ChatInputCommandInteraction) => {
 
     content.sort((a:QuoteDefault | QuoteImage, b: QuoteDefault | QuoteImage) => 
         {
-            return a.timestamp < b.timestamp ? -1 : 1; 
+            return a.id < b.id ? -1 : 1; 
         }
     )
-
-    content.map(async (element: QuoteDefault) => {
-        const example: EmbedBuilder = await embedQuote(element);
-        await interaction.followUp({
-            ephemeral: true,
-            embeds: [example],
-        })
+    let promises: any = []; // Array to store promises
+    content.forEach(async (element: QuoteDefault, i: number) => {
+      promises.push(embedQuote(element)); // Add each promise to the array
+        // Wait for all promises to resolve using Promise.all()
     });
+
+    Promise.all(promises).then((list) => {
+        list.forEach((element) => {
+            interaction.followUp({
+                ephemeral: true,
+                embeds: [element],
+            });
+        })
+ 
+    })
+    
     return;
 }
