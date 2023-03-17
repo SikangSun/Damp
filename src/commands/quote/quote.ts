@@ -152,7 +152,7 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   }
 
   //console.log(message.author)
-  //console.log(interaction, "asdf")
+  console.log(interaction, "asdf")
  
   const quoteObject: QuoteImage = {
     id: 0,
