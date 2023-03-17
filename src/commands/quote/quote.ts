@@ -1,8 +1,7 @@
-import { insertionFailed } from './../../utils/embed';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { insertQuote, getQuote } from '../../database/index';
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from 'discord.js'
-import { command, validTag } from '../../utils'
+import { command, validTag, insertionFailed  } from '../../utils'
 import { Client, GatewayIntentBits, ChatInputCommandInteraction} from 'discord.js'
 
 require('dotenv').config();
@@ -83,29 +82,27 @@ const message = async (interaction: ChatInputCommandInteraction) => {
   const tag: string = interaction.options.getString('tag')!
 
   if (!validTag(tag)) {
-    return interaction.reply({
-      content: "Invalid tag, can be interpreted as ID",
-      ephemeral: false,
-      embeds: [insertionFailed(tag)]
-    })
+    return insertionFailed(interaction, tag, 102);
   }
 
+  let unique: any;
   if (tag) { //checking tag uniqueness
-    const unique: QuoteDefault | undefined = await getQuote(tag, interaction.guildId!);
-    if (unique) {
-      return interaction.reply({
-        ephemeral: false,
-        embeds: [insertionFailed(tag)]
-      })
-    }
+    unique = await getQuote(tag, interaction.guildId!)
+  }
+  if (unique) {
+    return insertionFailed(interaction, tag, 101);
   }
 
   const guildId: string = interaction.guildId!
   const channelId: string = interaction.channelId!
   let Channel: any = await interaction.client.channels.fetch(channelId)
-    .catch((err: any) => {console.log(err);});
+    .catch((err: any) => { 
+      return insertionFailed(interaction, tag, 103);
+    });
   const message = await Channel!.messages.fetch(messageid)
-    .catch((err: any) => {console.log(err);});
+    .catch((err: any) => {
+      return insertionFailed(interaction, tag, 104);
+    });
   //console.log(message.author)
   //  console.log(interaction)
   
@@ -121,7 +118,10 @@ const message = async (interaction: ChatInputCommandInteraction) => {
     quoter: interaction.user.id,
     tag: tag
   };
-  await insertQuote(quoteObject);
+  await insertQuote(quoteObject)
+    .catch((err: any) => {
+      return insertionFailed(interaction, tag, 105);
+    })
 
   return interaction.reply(
     {
@@ -137,17 +137,13 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   const link: string = interaction.options.getString('link')!
   const title: string = interaction.options.getString('title')!
   const tag: string = interaction.options.getString('tag')!
-  let unique: QuoteDefault | undefined;
+
+  let unique: any;
   if (tag) { //checking tag uniqueness
     unique = await getQuote(tag, interaction.guildId!);
   }
   if (unique) {
-    return interaction.reply(
-      {
-        ephemeral: false,
-        embeds: [insertionFailed(tag)]
-      }
-    )
+    return insertionFailed(interaction, tag, 101)
   }
 
   //console.log(message.author)
@@ -163,9 +159,11 @@ const image = async (interaction: ChatInputCommandInteraction) => {
     title: title,
     tag: tag
   };
-  await insertQuote(quoteObject);
+  await insertQuote(quoteObject)
+  .catch((err: any) => {
+    return insertionFailed(interaction, tag, 105);
+  })
 
-  
   return interaction.reply({
     ephemeral: false,
     content: `"${quoteObject.tag}" has been quoted 👌` 

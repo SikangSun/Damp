@@ -45,9 +45,9 @@ export const getAllQuotes = async (guildID: string) => {
 }
 
 
-export const getQuote = async (input: string, guildID: string): Promise<QuoteDefault> => {
+export const getQuote = async (input: string, guildID: string): Promise<QuoteDefault | QuoteImage> => {
   const temp = await initializeCollection(guildID);
-  const oneQuote: QuoteDefault[] = await temp.find(idOrTag(input) === "tag" ? {tag: input} : {id: input}).toArray()
+  const oneQuote: QuoteDefault[] = await temp.find(idOrTag(input) === "tag" ? {tag: input} : {id: Number(input)}).toArray()
   return oneQuote[0];
 }
 

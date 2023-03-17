@@ -6,5 +6,5 @@ export const idOrTag = (input: string): string => {
 }
 
 export const validTag = (input: string): boolean => {
-    return isNaN(Number(input)) ? false : true;
+    return isNaN(Number(input)) ? true : false;
 }

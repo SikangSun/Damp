@@ -1,11 +1,7 @@
-import { idOrTag } from './../../utils/validation';
 import { EmbedBuilder, Client } from 'discord.js';
-import { QuoteDefault } from './../../types/quote';
-import { embedQuote, findFailed } from './../../utils/embed';
 import { updateTagQuote } from './../../database';
-import { SlashCommandBuilder, InteractionWebhook } from 'discord.js';
-import { command } from '../../utils';
-import { GatewayIntentBits } from 'discord.js';
+import { SlashCommandBuilder } from 'discord.js';
+import { command, idOrTag, embedQuote, findFailed } from '../../utils';
 
 require('dotenv').config();
 

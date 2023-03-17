@@ -12,8 +12,8 @@ const embedClient = new Client({
 
   embedClient.login(keys.clientToken)
   .catch((err: any) => {
-    console.error('[Login Error]', err)
-    process.exit(1)
+    console.error('[Login Error]', err);
+    process.exit(1);
   })
 
 
@@ -28,17 +28,6 @@ export const embedQuote = async (quote: QuoteDefault | QuoteImage): Promise<Embe
 
 }
 
-export const insertionFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" already exists. Quote failed 😔`)
-}
-
-export const findFailed = (tag: string): EmbedBuilder => {
-	return new EmbedBuilder()
-	.setColor(0xbe2e1b)
-	.setDescription(`Tag \"${tag}\" not found. Retrieval failed 😱`)
-}
 
 const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
 	const time = `<t:${Math.floor(quote.timestamp.valueOf()/1000)}:f>`

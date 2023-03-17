@@ -1,9 +1,7 @@
 import { EmbedBuilder, Client, SelectMenuInteraction } from 'discord.js';
-import { QuoteDefault } from './../../types/quote';
-import { embedQuote, findFailed } from './../../utils/embed';
 import { deleteOneQuote } from './../../database/index';
-import { SlashCommandBuilder, InteractionWebhook } from 'discord.js';
-import { command, idOrTag } from '../../utils';
+import { SlashCommandBuilder } from 'discord.js';
+import { command, idOrTag, embedQuote, findFailed } from '../../utils';
 
 require('dotenv').config();
 

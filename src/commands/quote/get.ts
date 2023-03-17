@@ -1,9 +1,7 @@
-import { EmbedBuilder, Client, Interaction } from 'discord.js';
+import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction } from 'discord.js';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
-import { embedQuote, findFailed } from './../../utils/embed';
 import { getAllQuotes, getQuote } from './../../database/index';
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction } from 'discord.js';
-import { command } from '../../utils';
+import { command, embedQuote, findFailed, idOrTag  } from '../../utils';
 import { GatewayIntentBits } from 'discord.js';
 
 require('dotenv').config();
@@ -37,18 +35,19 @@ export default command(getone, async ({ interaction }) => {
     const subcommand = interaction.options.getSubcommand();
     console.log("getone");
     if (subcommand === "quote") {
-        return await one(interaction)
+        return await one(interaction);
       }
-      else if (subcommand === "all") {
-        return all(interaction)
-      }
+    else if (subcommand === "all") {
+        return await all(interaction);
+    }
  
 })
 
 const one = async (interaction: ChatInputCommandInteraction) => {
     const input: string = interaction.options.getString('tag_or_id')!
-    const quote = await getQuote(input, interaction.guildId!);
-    // console.log(quote)
+    const quote: any = await getQuote(input, interaction.guildId!)
+        .catch((err: any) => {return findFailed(interaction, input, 105)})
+    
     if (quote) {
         const embed: EmbedBuilder = await embedQuote(quote);
         return interaction.reply({
@@ -57,10 +56,7 @@ const one = async (interaction: ChatInputCommandInteraction) => {
         });
     }
     
-    return interaction.reply({
-        ephemeral: false,
-        embeds: [findFailed(input)],
-    });
+    findFailed(interaction, input, 101)
 }
 
 const all = async (interaction: ChatInputCommandInteraction) => {
