@@ -14,9 +14,9 @@ const quote = new SlashCommandBuilder()
     .addStringOption((suboption: any) =>
     suboption
       .setName('message_id')
-      .setDescription('Provide the bot with the ID of the message you want to quote.')
+      .setDescription('ID or the link of the message you want to quote.')
       .setMinLength(1)
-      .setMaxLength(30)
+      .setMaxLength(150)
       .setRequired(true)
     )
     .addStringOption((suboption: any) =>
@@ -75,9 +75,13 @@ export default command(quote, async ({ interaction }) => {
 
 
 const message = async (interaction: ChatInputCommandInteraction) => {
-  const messageid: string = interaction.options.getString('message_id')!
+  let messageid: string = interaction.options.getString('message_id')!
   const tag: string = interaction.options.getString('tag')!
 
+  if (messageid.includes("https")) {
+    const splitArr = messageid.split("/");
+    messageid = splitArr?.pop()!;
+  }
   if (tag && !validTag(tag)) {
     return insertionFailed(interaction, tag, 102);
   }
@@ -140,16 +144,16 @@ const image = async (interaction: ChatInputCommandInteraction) => {
     return insertionFailed(interaction, tag, 102);
   }
 
-  let unique: any;
+  let not_unique: any;
   if (tag) { //checking tag uniqueness
-    unique = await getQuote(tag, interaction.guildId!);
+    not_unique = await getQuote(tag, interaction.guildId!);
   }
-  if (unique) {
+  if (not_unique) {
     return insertionFailed(interaction, tag, 101)
   }
 
   //console.log(message.author)
-  console.log(interaction, "asdf")
+ 
  
   const quoteObject: QuoteImage = {
     id: 0,
@@ -168,7 +172,7 @@ const image = async (interaction: ChatInputCommandInteraction) => {
  
   return interaction.reply({
     ephemeral: false,
-    content: `"${quoteObject.tag}" has been quoted 👌` 
+    content: `${quoteObject.tag ? `\"${quoteObject}\"` : "Your image/gif"} has been quoted 👌` 
   })
 }
 

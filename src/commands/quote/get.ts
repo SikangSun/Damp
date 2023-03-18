@@ -75,7 +75,6 @@ const all = async (interaction: ChatInputCommandInteraction) => {
         const reply = await interaction.fetchReply();
         const reactionEmoji: any = Array.from(interaction?.guild?.emojis?.cache.values()!)
         let validEmoji;
-        console.log(validEmoji)
         if (reactionEmoji.length != 0) {
             validEmoji = reactionEmoji.filter((obj: any) => obj.available === true);
         }
@@ -84,8 +83,7 @@ const all = async (interaction: ChatInputCommandInteraction) => {
         }
 
         const random: number = Math.floor(Math.random() * validEmoji.length);
-        console.log(validEmoji)
-        await reply.react(validEmoji![random].toString())
+        await reply.react(validEmoji![random].toString());
       }
     )
 
