@@ -38,11 +38,24 @@ export const insertQuote = async ( quote: QuoteDefault | QuoteImage): Promise<vo
 }
 
 
+
+export const getRandomQuote = async (guildID: string) => {
+  const temp = await initializeCollection(guildID);
+  const all = await temp.aggregate([
+    { $match: { type: { $ne: "sentinel" } } },
+    { $sample: { size: 1 } }
+  ]).toArray()
+  return all[0];
+}
+
+
+
 export const getAllQuotes = async (guildID: string) => {
   const temp = await initializeCollection(guildID);
   const all = await temp.find({ type: { $ne: 'sentinel' }}).toArray()
   return all;
 }
+
 
 
 export const getQuote = async (input: string, guildID: string): Promise<QuoteDefault | QuoteImage> => {

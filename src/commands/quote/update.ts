@@ -3,8 +3,6 @@ import { updateTagQuote, getQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
 import { command, idOrTag, embedQuote, updateFailed, validTag } from '../../utils';
 
-require('dotenv').config();
-
 
 const tagedit = new SlashCommandBuilder()
   .setName('tag')

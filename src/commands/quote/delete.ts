@@ -3,8 +3,6 @@ import { deleteOneQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
 import { command, idOrTag, embedQuote, deleteFailed } from '../../utils';
 
-require('dotenv').config();
-
 
 const deleteone = new SlashCommandBuilder()
   .setName('delete')

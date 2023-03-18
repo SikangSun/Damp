@@ -1,12 +1,10 @@
-import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction } from 'discord.js';
+import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction, Message, InteractionResponse } from 'discord.js';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { getAllQuotes, getQuote } from './../../database/index';
 import { command, embedQuote, findFailed, idOrTag, Reply  } from '../../utils';
 import { GatewayIntentBits } from 'discord.js';
 
-require('dotenv').config();
-
-
+const emoji = '🆗';
 const getone = new SlashCommandBuilder()
   .setName('get')
   .setDescription('Get quote by tag or id')
@@ -67,12 +65,30 @@ const all = async (interaction: ChatInputCommandInteraction) => {
     if (content.length == 0) {
         return findFailed(interaction, "", 102);
     }
-    await interaction.reply(
+    const message: any = await interaction.reply(
         {
-            ephemeral: true,
-            content: `Here is all your quotes` 
+            ephemeral: false,
+            content: `Here is all of your quotes` 
         }
     )
+    .then(async (message) => {
+        const reply = await interaction.fetchReply();
+        const reactionEmoji: any = Array.from(interaction?.guild?.emojis?.cache.values()!)
+        let validEmoji;
+        console.log(validEmoji)
+        if (reactionEmoji.length != 0) {
+            validEmoji = reactionEmoji.filter((obj: any) => obj.available === true);
+        }
+        else {
+            validEmoji = [emoji]
+        }
+
+        const random: number = Math.floor(Math.random() * validEmoji.length);
+        console.log(validEmoji)
+        await reply.react(validEmoji![random].toString())
+      }
+    )
+
 
     content.sort((a:QuoteDefault | QuoteImage, b: QuoteDefault | QuoteImage) => 
         {
@@ -92,7 +108,7 @@ const all = async (interaction: ChatInputCommandInteraction) => {
                 embeds: [element],
             });
         })
- 
+        
     })
     
     return;

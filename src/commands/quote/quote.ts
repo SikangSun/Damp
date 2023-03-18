@@ -1,10 +1,7 @@
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { insertQuote, getQuote } from '../../database/index';
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder } from 'discord.js'
+import { SlashCommandBuilder, SlashCommandSubcommandBuilder, Client, GatewayIntentBits, ChatInputCommandInteraction } from 'discord.js'
 import { command, validTag, insertionFailed  } from '../../utils'
-import { Client, GatewayIntentBits, ChatInputCommandInteraction} from 'discord.js'
-
-require('dotenv').config();
 
 const quote = new SlashCommandBuilder()
   .setName('quote')
