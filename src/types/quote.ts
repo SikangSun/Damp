@@ -21,3 +21,11 @@ export type QuoteImage {
     quoter: string;
     tag: string;
 }
+
+export type Sentinel {
+    _id: number,
+    type: string,
+    seq: number,
+    public_server_mode: boolean,
+    quoter_list: string[]
+}
