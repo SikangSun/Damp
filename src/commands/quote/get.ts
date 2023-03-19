@@ -1,8 +1,7 @@
 import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction, Message, InteractionResponse } from 'discord.js';
 import { QuoteDefault, QuoteImage } from './../../types/quote';
 import { getAllQuotes, getQuote } from './../../database/index';
-import { command, embedQuote, findFailed, idOrTag, Reply  } from '../../utils';
-import { GatewayIntentBits } from 'discord.js';
+import { command, embedQuote, findFailed, idOrTag, Reply } from '../../utils';
 
 const emoji = '🆗';
 const getone = new SlashCommandBuilder()

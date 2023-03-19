@@ -87,3 +87,13 @@ export const deleteFailed = (interaction: ChatInputCommandInteraction, input: st
     }
     interaction.reply(Reply.error(errMsg));
 }
+
+
+
+export const roleFailed = (interaction: ChatInputCommandInteraction, input: string, errCode: number) => {
+    let errMsg: string = "";
+    switch (errCode) {
+
+    }
+    interaction.reply(Reply.error(errMsg));
+}
