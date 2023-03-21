@@ -80,10 +80,10 @@ export const deleteFailed = (interaction: ChatInputCommandInteraction, input: st
             errMsg = `Delete failed: quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`} does not exist`;
             break;
         case 105:
-            errMsg = "Update failed: could not connect to database"
+            errMsg = "Delete failed: could not connect to database"
             break;
         default:
-            errMsg = "Update failed, please try again later"
+            errMsg = "Delete failed, please try again later"
     }
     interaction.reply(Reply.error(errMsg));
 }
@@ -93,7 +93,20 @@ export const deleteFailed = (interaction: ChatInputCommandInteraction, input: st
 export const roleFailed = (interaction: ChatInputCommandInteraction, input: string, errCode: number) => {
     let errMsg: string = "";
     switch (errCode) {
-
+        case 100:
+            errMsg = "Validation failed: You do not have administrator privileges."
+            break;
+        case 101:
+            errMsg = "Validation failed: Incorrect role format. Please @ the role you would like to add/delete in command input (@ing in command will not send notification)."
+            break;
+        case 102:
+            errMsg = "Validation failed: Role does not exist in this server. Please try again"
+            break;
+        case 105:
+            errMsg = "Role failed: could not connect to database."
+            break;
+        default:
+            errMsg = "validation failed, please try agian later"
     }
     interaction.reply(Reply.error(errMsg));
 }

@@ -1,5 +1,5 @@
 import { getSentinel } from './../database/index';
-import { EmbedBuilder, Client, User, GatewayIntentBits, Interaction, GuildMember, PermissionResolvable } from 'discord.js';
+import { EmbedBuilder, Client, User, GatewayIntentBits, Interaction, GuildMember, PermissionResolvable, GuildMemberRoleManager } from 'discord.js';
 import { QuoteDefault, QuoteImage, Sentinel } from './../types/quote';
 
 
@@ -24,4 +24,12 @@ export const isAdmin = (interaction: Interaction): boolean => {
     const member = interaction.member as GuildMember;
     const admin: PermissionResolvable = "Administrator";
     return member.permissions.has(admin);
+}
+
+export const memberIsQuoter = async (interaction: Interaction): Promise<boolean> => {
+    const memberRoles: string[] = Array.from((interaction.member!.roles as GuildMemberRoleManager).cache.keys());
+    const sent: Sentinel = await getSentinel(interaction.guildId!);
+    const quoterList: string[] = await sent.quoter_list;
+    const intersection = memberRoles.filter(value => quoterList.includes(value));
+    return intersection.length == 0 ? false : true;
 }

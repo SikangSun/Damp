@@ -5,17 +5,32 @@ import {
 
 export const Colors = {
   error: 0xf54242,
+  success: 0x49be25,
 }
 
-export const Reply = {
-  error(msg: string): InteractionReplyOptions {
+interface ReplyObject {
+  error: (msg: string) => InteractionReplyOptions;
+  success: (msg: string) => InteractionReplyOptions;
+}
+
+
+export const Reply: ReplyObject = {
+  error: (msg: string): InteractionReplyOptions => {
     return {
       ephemeral: true,
       embeds: [{
         color: Colors.error,
         description: msg
       }]
-    }
+    };
+  },
+  success: (msg: string): InteractionReplyOptions => {
+    return {
+      embeds: [{
+        color: Colors.success,
+        description: msg
+      }]
+    };
   }
 }
 
@@ -28,4 +43,5 @@ export const EditReply = {
       }]
     }
   }
+
 }

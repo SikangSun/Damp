@@ -13,7 +13,7 @@ const quote = new SlashCommandBuilder()
     .setDescription("Quote a message")
     .addStringOption((suboption: any) =>
     suboption
-      .setName('message_id')
+      .setName('message')
       .setDescription('ID or the link of the message you want to quote.')
       .setMinLength(1)
       .setMaxLength(150)
@@ -172,7 +172,7 @@ const image = async (interaction: ChatInputCommandInteraction) => {
  
   return interaction.reply({
     ephemeral: false,
-    content: `${quoteObject.tag ? `\"${quoteObject}\"` : "Your image/gif"} has been quoted 👌` 
+    content: `${quoteObject.tag ? `\"${quoteObject.tag}\"` : "Your image/gif"} has been quoted 👌` 
   })
 }
 

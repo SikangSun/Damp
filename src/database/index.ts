@@ -66,7 +66,7 @@ export const getSentinel = async (guild: string): Promise<Sentinel> => {
   const collectionArray = await db.listCollections().toArray();
   const exist = collectionArray.some((collection: any) => collection.name === guild)
   if (!exist) newServer(guild);
-  return await db.collection(guild).findOne({ type: 'sentinel' });
+  return await db.collection(guild).findOne({ type: 'sentinel' })!;
 }
 
 
