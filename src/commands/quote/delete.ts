@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client, SelectMenuInteraction } from 'discord.js';
-import { deleteOneQuote } from './../../database';
+import { deleteOneQuote, getQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
-import { command, idOrTag, embedQuote, deleteFailed } from '../../utils';
+import { command, idOrTag, embedQuote, deleteFailed, isAdmin, memberIsQuoter } from '../../utils';
 
 
 const deleteone = new SlashCommandBuilder()
@@ -19,6 +19,16 @@ export default command(deleteone, async ({ interaction }) => {
     console.log("delete");
     const input: string = interaction.options.getString('input')!
     const identifier = idOrTag(input);
+
+   
+    if (await memberIsQuoter(interaction)) {
+        const current =  await getQuote(input, interaction.guildId!)
+                        .catch((err: any) => {return deleteFailed(interaction, input, 105);})
+        if (isAdmin(interaction) == false && current!.quoter !== interaction.user.id!) { //role checking
+            deleteFailed(interaction, input, 103);
+        }
+    }
+
     const quote = await deleteOneQuote(identifier, input, interaction.guildId!)
         .catch(err => {
             return deleteFailed(interaction, input, 105);

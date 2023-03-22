@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client } from 'discord.js';
 import { updateTagQuote, getQuote } from './../../database';
 import { SlashCommandBuilder } from 'discord.js';
-import { command, idOrTag, embedQuote, updateFailed, validTag } from '../../utils';
+import { command, idOrTag, embedQuote, updateFailed, validTag, isAdmin, memberIsQuoter } from '../../utils';
 
 
 const tagedit = new SlashCommandBuilder()
@@ -36,9 +36,19 @@ export default command(tagedit, async ({ interaction }) => {
     else {//ambiguous tag
         return updateFailed(interaction, newtag, 103);
     }
+
     if (unique) {//not distinct
       return updateFailed(interaction, newtag, 101)
     }
+
+    if (await memberIsQuoter(interaction)) {//role checking
+        const current =  await getQuote(input, interaction.guildId!)
+                                .catch((err: any) => {return updateFailed(interaction, input, 105);})
+        if (isAdmin(interaction) == false && current!.quoter !== interaction.user.id!) { 
+            updateFailed(interaction, input, 106);
+        }
+    }
+
     const idTag: string = idOrTag(input);
     const result = await updateTagQuote(idTag, newtag, input, interaction.guildId!)
         .catch((err: any) => {return updateFailed(interaction, input, 105)})

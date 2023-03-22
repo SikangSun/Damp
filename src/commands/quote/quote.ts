@@ -1,7 +1,8 @@
-import { QuoteDefault, QuoteImage } from './../../types/quote';
-import { insertQuote, getQuote } from '../../database/index';
+import { isPublicServerOn, getUserRole, memberIsQuoter } from './../../utils/validation';
+import { QuoteDefault, QuoteImage, Role } from './../../types/quote';
+import { insertQuote, getQuote, getNumberOfQuotesByUser  } from '../../database/index';
 import { SlashCommandBuilder, SlashCommandSubcommandBuilder, Client, GatewayIntentBits, ChatInputCommandInteraction } from 'discord.js'
-import { command, validTag, insertionFailed  } from '../../utils'
+import { command, validTag, insertionFailed, Reply  } from '../../utils'
 
 const quote = new SlashCommandBuilder()
   .setName('quote')
@@ -13,7 +14,7 @@ const quote = new SlashCommandBuilder()
     .setDescription("Quote a message")
     .addStringOption((suboption: any) =>
     suboption
-      .setName('message')
+      .setName('message_link_or_id')
       .setDescription('ID or the link of the message you want to quote.')
       .setMinLength(1)
       .setMaxLength(150)
@@ -63,7 +64,18 @@ const quote = new SlashCommandBuilder()
 
 export default command(quote, async ({ interaction }) => {
   const subcommand = interaction.options.getSubcommand();
-  console.log("quote ", subcommand);
+  console.log("quote", subcommand);
+
+  if (await isPublicServerOn(interaction.guildId!)) { //role checking
+    const userRole: Role = await getUserRole(interaction);
+    if (userRole == Role.USER) {
+      return insertionFailed(interaction, "", 106);
+    }
+    else if (userRole == Role.QUOTER && await getNumberOfQuotesByUser(interaction.guildId!, interaction.user.id!) >= 10) {
+      return insertionFailed(interaction, "", 107);
+    }
+  }
+
   if (subcommand === "message") {
     return await message(interaction);
   }
@@ -106,7 +118,9 @@ const message = async (interaction: ChatInputCommandInteraction) => {
     });
   //console.log(message.author)
   //  console.log(interaction)
-  
+
+
+
   const quoteObject: QuoteDefault = {
     id: 0,
     type: "message",
@@ -124,12 +138,7 @@ const message = async (interaction: ChatInputCommandInteraction) => {
       return insertionFailed(interaction, tag, 105);
     })
 
-  return interaction.reply(
-    {
-      ephemeral: false,
-      content: `"${quoteObject.content}" has been quoted 👌` 
-    }
-  )
+  return interaction.reply(Reply.success(`"${quoteObject.content}" has been quoted 👌`))
 }
 
 

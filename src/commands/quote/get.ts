@@ -1,7 +1,7 @@
 import { EmbedBuilder, Client, Interaction, SlashCommandBuilder, SlashCommandSubcommandBuilder, ChatInputCommandInteraction, Message, InteractionResponse } from 'discord.js';
-import { QuoteDefault, QuoteImage } from './../../types/quote';
+import { QuoteDefault, QuoteImage, Role } from './../../types/quote';
 import { getAllQuotes, getQuote } from './../../database/index';
-import { command, embedQuote, findFailed, idOrTag, Reply } from '../../utils';
+import { command, embedQuote, findFailed, idOrTag, Reply, isPublicServerOn, getUserRole } from '../../utils';
 
 const emoji = '🆗';
 const getone = new SlashCommandBuilder()
@@ -58,7 +58,7 @@ const one = async (interaction: ChatInputCommandInteraction) => {
 
 const all = async (interaction: ChatInputCommandInteraction) => {
     console.log("getall");
-    const content: any = await getAllQuotes(interaction.guildId!)
+    let content: any = await getAllQuotes(interaction.guildId!)
         .catch((err: any) => {console.log(err); return findFailed(interaction, "", 105)})
 
     if (content.length == 0) {
@@ -92,6 +92,11 @@ const all = async (interaction: ChatInputCommandInteraction) => {
             return a.id < b.id ? -1 : 1; 
         }
     )
+
+    if (await isPublicServerOn(interaction.guildId!) == true && await getUserRole(interaction) == Role.USER) {
+        content = content.slice(-10); //Role checking
+    } 
+
     let promises: any = []; // Array to store promises
     content.forEach(async (element: QuoteDefault, i: number) => {
       promises.push(embedQuote(element)); // Add each promise to the array

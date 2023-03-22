@@ -35,6 +35,12 @@ export const getAllQuotes = async (guildID: string) => {
 }
 
 
+export const getNumberOfQuotesByUser = async (guildID: string, quoterID: string): Promise<number> => {
+  const temp = await initializeCollection(guildID);
+  const count = await temp.countDocuments({ quoter: { $eq: quoterID } });
+  return count;
+}
+
 
 export const getQuote = async (input: string, guildID: string): Promise<QuoteDefault | QuoteImage> => {
   const temp = await initializeCollection(guildID);

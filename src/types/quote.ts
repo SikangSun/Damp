@@ -1,4 +1,4 @@
-export type QuoteDefault {
+export type QuoteDefault = {
     id: number;
     type: "message";
     content: string;
@@ -11,7 +11,7 @@ export type QuoteDefault {
     tag: string;
 }
 
-export type QuoteImage {
+export type QuoteImage = {
     id: number;
     type: "image";
     link: string;
@@ -22,10 +22,16 @@ export type QuoteImage {
     tag: string;
 }
 
-export type Sentinel {
+export type Sentinel = {
     _id: number,
     type: string,
     seq: number,
     public_server_mode: boolean,
     quoter_list: string[]
+}
+
+export enum Role {
+    ADMINISTRATOR,
+    QUOTER,
+    USER,
 }

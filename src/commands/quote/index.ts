@@ -6,9 +6,10 @@ import tagedit from "./update"
 import deleteone from "./delete"
 import random from "./random"
 import roles from "./roles"
+import help from "./help"
 
 export default category('quote', [
-  quote, getone, tagedit, deleteone, random, roles
+  quote, getone, tagedit, deleteone, random, roles, help
 ])
 
 

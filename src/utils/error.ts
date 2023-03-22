@@ -20,6 +20,12 @@ export const insertionFailed = (interaction: ChatInputCommandInteraction, tag: s
         case 105:
             errMsg = "Quote failed: could not connect to database"
             break;
+        case 106:
+            errMsg = "Quote failed: You do not have quoter permissions. Please request a role from an administrator."
+            break;
+        case 107:
+            errMsg = "Quote failed: You have reached 10 quotes quote limit. Please delete one of your quotes or request an adminstrator role and try again."
+            break;
         default:
             errMsg = "Quote failed, please try again later"
     }
@@ -65,6 +71,9 @@ export const updateFailed = (interaction: ChatInputCommandInteraction, input: st
         case 105:
             errMsg = "Update failed: could not connect to database"
             break;
+        case 106:
+            errMsg = `Update failed: You do not have permission to delete the quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`}. Without administrator role, you only have permission to delete your own quotes.`;
+            break;
         default:
             errMsg = "Update failed, please try again later"
     }
@@ -78,6 +87,9 @@ export const deleteFailed = (interaction: ChatInputCommandInteraction, input: st
     switch (errCode) {
         case 102:
             errMsg = `Delete failed: quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`} does not exist`;
+            break;
+        case 103:
+            errMsg = `Delete failed: You do not have permission to update the quote with ${ idTag === "tag" ? `tag ${input}` : `id ${input}`}. You only have permission to update your own quotes.`;
             break;
         case 105:
             errMsg = "Delete failed: could not connect to database"

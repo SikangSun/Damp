@@ -2,7 +2,7 @@ import { getRandomQuote, getSentinel, addRoleToQuoter, deleteRoleInQuoter } from
 import { QuoteDefault, QuoteImage, Sentinel } from './../../types/quote';
 import { insertQuote, getQuote, setPublicServerMode } from '../../database/index';
 import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember, PermissionResolvable, GuildMemberRoleManager } from 'discord.js'
-import { Reply, command, embedQuote,  roleFailed, isAdmin,  memberIsQuoter } from '../../utils'
+import { Reply, command, embedQuote,  roleFailed, isAdmin,  memberIsQuoter, roleExist } from '../../utils'
 
 
 const roles = new SlashCommandBuilder()
@@ -90,13 +90,23 @@ const showList = async (interaction: ChatInputCommandInteraction) => {
 }
 
 const addQuoter = async (interaction: ChatInputCommandInteraction, roleid: string) => {
-  const extractRoleid = roleid.match(/<@&(\d+)>/);
+  const matchRoleId = roleid.match(/<@&(\d+)>/);
+  let extractRoleId = "";
   console.log("add role");
-  if (!extractRoleid) {
+  if (matchRoleId) {
+    extractRoleId = matchRoleId[1];
+  }
+ 
+  if (!extractRoleId) {
    roleFailed(interaction, "", 101);
   }
-  await addRoleToQuoter(extractRoleid![1], interaction.guildId!);
-  const description: string = `[<@&${extractRoleid![1]}>] has been added as a quoter role.`;
+
+  if (await roleExist(interaction, extractRoleId) == false) {
+    return roleFailed(interaction, extractRoleId, 102);
+  }
+
+  await addRoleToQuoter(extractRoleId!, interaction.guildId!);
+  const description: string = `[<@&${extractRoleId!}>] has been added as a quoter role.`;
   interaction.reply(Reply.success(description));
 }
 
