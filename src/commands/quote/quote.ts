@@ -87,7 +87,7 @@ export default command(quote, async ({ interaction }) => {
 
 
 const message = async (interaction: ChatInputCommandInteraction) => {
-  let messageid: string = interaction.options.getString('message_id')!
+  let messageid: string = interaction.options.getString('message')!
   const tag: string = interaction.options.getString('tag')!
 
   if (messageid.includes("https")) {
