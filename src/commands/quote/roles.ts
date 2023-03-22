@@ -6,7 +6,7 @@ import { Reply, command, embedQuote,  roleFailed, isAdmin,  memberIsQuoter, role
 
 
 const roles = new SlashCommandBuilder()
-  .setName('_admin_only')
+  .setName('admin_only')
   .setDescription('Role permission settings for public/large servers')
   .addStringOption(option =>
 		option.setName('commands')
