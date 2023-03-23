@@ -68,11 +68,9 @@ export const deleteOneQuote = async (identifier: string, input: string, guildID:
 
 
 export const getSentinel = async (guild: string): Promise<Sentinel> => {
-  if (!db) await dbConnect();
-  const collectionArray = await db.listCollections().toArray();
-  const exist = collectionArray.some((collection: any) => collection.name === guild)
-  if (!exist) newServer(guild);
-  return await db.collection(guild).findOne({ type: 'sentinel' })!;
+  const temp = await initializeCollection(guild);
+
+  return await temp.findOne({ type: 'sentinel' })!;
 }
 
 
