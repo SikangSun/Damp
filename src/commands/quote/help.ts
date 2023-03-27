@@ -1,8 +1,8 @@
-import { getRandomQuote, getSentinel, addRoleToQuoter, deleteRoleInQuoter } from './../../database';
+import { command, embedHelp } from './../../utils';
+import { ChatInputCommandInteraction, SlashCommandBuilder } from 'discord.js';
 import { QuoteDefault, QuoteImage, Sentinel } from './../../types/quote';
-import { insertQuote, getQuote, setPublicServerMode } from '../../database/index';
-import { SlashCommandBuilder, ChatInputCommandInteraction, EmbedBuilder, GuildMember, PermissionResolvable, GuildMemberRoleManager } from 'discord.js'
-import { Reply, command, embedQuote,  roleFailed, isAdmin,  memberIsQuoter, roleExist } from '../../utils'
+
+
 
 
 const help = new SlashCommandBuilder()
@@ -11,5 +11,9 @@ const help = new SlashCommandBuilder()
 
 
   export default command(help, async ({ interaction }) => {
-
+    const [first, second] = embedHelp();
+    return interaction.reply({
+      ephemeral: true,
+      embeds: [first, second],
+    });
   })

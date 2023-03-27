@@ -1,3 +1,4 @@
+import { embedAdminHelp } from './../../utils/embed';
 import { getRandomQuote, getSentinel, addRoleToQuoter, deleteRoleInQuoter } from './../../database';
 import { QuoteDefault, QuoteImage, Sentinel } from './../../types/quote';
 import { insertQuote, getQuote, setPublicServerMode } from '../../database/index';
@@ -13,6 +14,7 @@ const roles = new SlashCommandBuilder()
 			.setDescription('select a specfic command')
 			.setRequired(true)
 			.addChoices(
+        { name: "help", value: "help"},
 				{ name: 'on', value: 'on' },
         { name: 'off', value: 'off' },
 				{ name: 'show_info', value: 'show' },
@@ -37,7 +39,14 @@ export default command(roles, async ({ interaction }) => {
   }
 
   //is admin check
-  if (command === "on" || command === "off") {
+  if (command === "help") {
+    const replyObject = embedAdminHelp();
+    return interaction.reply({
+      ephemeral: true,
+      embeds: [replyObject],
+    })
+  }
+  else if (command === "on" || command === "off") {
     await modeSwitch(interaction,  command === "on" ? true : false);
   }
   else if (command === "show") {
