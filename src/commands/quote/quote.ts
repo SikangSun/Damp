@@ -39,7 +39,7 @@ const quote = new SlashCommandBuilder()
         .setName('link')
         .setDescription('Link to your image/gif (For Discord images, right click and press \"Copy Link\")')
         .setMinLength(1)
-        .setMaxLength(150)
+        .setMaxLength(250)
         .setRequired(true)
     )
     .addStringOption((suboption) =>

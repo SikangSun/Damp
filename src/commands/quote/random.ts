@@ -33,7 +33,6 @@ export default command(random, async ({ interaction }) => {
             }
     
             const random: number = Math.floor(Math.random() * validEmoji.length);
-
             await reply.react(validEmoji![random].toString())
             }
         )

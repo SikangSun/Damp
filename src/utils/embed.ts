@@ -82,7 +82,7 @@ const tagValue = `> Change the tag of a quote given its ID or tag. Note that the
 const deleteName = `\`/delete [id or tag]\``;
 const deleteValue = `> Delete a quote from the server given the ID or tag. This is a permanent action and cannot be restored.`;
 const randomName = "\`/random\`";
-const randomValue = "> Randomly retrieve a quote, display it, and Damp will react to it. When the server has enough custom emotes, Damp will also react in the server's emotes instead of default ones.";
+const randomValue = "> Randomly retrieve a quote, display it, and Damp will react to it. When the server has enough custom emotes, Damp will also react in the server's emotes instead of default ones. Note that Damp must be in the channel to have permission to react to the message.";
 const adminName = "\`/admin_only\`";
 const adminValue = "> To turn on public server options and role permissions, enter \"/admin_only help\" for more information. Admin roles required";
 const notes1Name = " State of Development"
@@ -92,12 +92,13 @@ const notes2Value = `By design, Damp do not have any administrator roles (e.g. k
 const notes3Name = " Upcoming updates and features";
 const notes3Value = `I will be mainly focusing on refining error handling and picking out any existing bugs. I am also trying to clean up the user interface to make Damp easier to interact with. After that, I am looking into implementing a "Card against Humanity" feature, which allows users to match their server quotes against a random prompt, which sounds fun to me at least :).`
 const notes4Name = "Damp";
-const notes4Value = `The reason why I started this project was because I loved having a "quote" channel in servers to record all of the stupid/funny things friends have said, and it is always nostalgic to read them over and having a good laugh. I hope Damp will achieve just that but in a more interactive and lively manner. Currently, the bot is completely free, however, as scalability kicks in, I may have to place restrictions on the number of quotes allowed per server. If you enjoy using Damp, feel free to share it with your other servers, public or private, as it will help me a lot. Thank you.`;
+const notes4Value = `The reason why I started this project was because I loved having a "quote" channel in servers to record all of the stupid/funny things friends have said, and it is always nostalgic to read them over and having a good laugh. I hope Damp will achieve just that but in a more interactive and lively manner. Currently, the bot is completely free, however, as scalability kicks in, I may have to place restrictions on the number of quotes allowed per server. If you enjoy using Damp, feel free to share it with your other servers, public or private, as it will help me a lot. Feel free to contact me for any inquries. Thank you.`;
 
 export const embedHelp = (): EmbedBuilder[] => {
 	const first = new EmbedBuilder()
 	.setColor(0x6375a1)
 	.setTitle("Getting Started")
+	.setURL("https://tinyurl.com/inviteDamp")
 	.setDescription(desc)
 	.addFields(
 		{name: quoteMessageName, value: quoteMessageValue},
