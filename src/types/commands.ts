@@ -17,7 +17,7 @@ export interface CommandProps {
 export type CommandExec =
   (props: CommandProps) => Awaitable<unknown>
 export type CommandMeta =
-  | SlashCommandBuilder
+  SlashCommandBuilder
   | SlashCommandSubcommandBuilder
   | SlashCommandSubcommandsOnlyBuilder
   | Omit<SlashCommandBuilder, "addSubcommand" | "addSubcommandGroup">
