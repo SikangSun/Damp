@@ -1,10 +1,10 @@
 import { isPublicServerOn, getUserRole, memberIsQuoter } from './../../utils/validation';
 import { QuoteDefault, QuoteImage, Role } from './../../types/quote';
 import { insertQuote, getQuote, getNumberOfQuotesByUser  } from '../../database/index';
-import { SlashCommandBuilder, SlashCommandSubcommandBuilder, Client, GatewayIntentBits, ChatInputCommandInteraction } from 'discord.js'
-import { command, validTag, insertionFailed, Reply  } from '../../utils'
+import { SlashCommandSubcommandsOnlyBuilder, SlashCommandBuilder, SlashCommandSubcommandBuilder, Client, GatewayIntentBits, ChatInputCommandInteraction } from 'discord.js'
+import { command, validTag, insertionFailed, Reply, embedQuote  } from '../../utils'
 
-const quote = new SlashCommandBuilder()
+const quote: SlashCommandSubcommandsOnlyBuilder = new SlashCommandBuilder()
   .setName('quote')
   .setDescription('quote your friends.')
 
@@ -116,8 +116,7 @@ const message = async (interaction: ChatInputCommandInteraction) => {
     .catch((err: any) => {
       return insertionFailed(interaction, tag, 104);
     });
-  //console.log(message.author)
-  //  console.log(interaction)
+
 
 
 
@@ -137,8 +136,9 @@ const message = async (interaction: ChatInputCommandInteraction) => {
     .catch((err: any) => {
       return insertionFailed(interaction, tag, 105);
     })
-
-  return interaction.reply(Reply.success(`"${quoteObject.content}" has been quoted 👌`))
+  const embed = await embedQuote(quoteObject);
+  const embedObject = {embeds: [embed]};
+  return interaction.reply(embedObject);
 }
 
 
@@ -178,10 +178,8 @@ const image = async (interaction: ChatInputCommandInteraction) => {
   .catch((err: any) => {
     return insertionFailed(interaction, tag, 105);
   })
- 
-  return interaction.reply({
-    ephemeral: false,
-    content: `${quoteObject.tag ? `\"${quoteObject.tag}\"` : "Your image/gif"} has been quoted 👌` 
-  })
+  const embed = await embedQuote(quoteObject);
+  const embedObject = {embeds: [embed]};
+  return interaction.reply(embedObject);
 }
 

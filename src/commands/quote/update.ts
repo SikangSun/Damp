@@ -1,10 +1,9 @@
-import { EmbedBuilder, Client } from 'discord.js';
+import { EmbedBuilder, Client, SlashCommandBuilder } from 'discord.js';
 import { updateTagQuote, getQuote } from './../../database';
-import { SlashCommandBuilder } from 'discord.js';
 import { command, idOrTag, embedQuote, updateFailed, validTag, isAdmin, memberIsQuoter } from '../../utils';
 
 
-const tagedit = new SlashCommandBuilder()
+const tagedit: Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand"> = new SlashCommandBuilder()
   .setName('tag')
   .setDescription('Look up a quote and change its tag')
     .addStringOption(option =>
