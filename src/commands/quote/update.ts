@@ -7,7 +7,7 @@ const tagedit: Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
   .setName('tag')
   .setDescription('Look up a quote and change its tag')
     .addStringOption(option =>
-    option.setName('tag_or_id')
+    option.setName('input')
         .setDescription('Enter your tag or id')
         .setRequired(true)
         .setMaxLength(30)
@@ -24,7 +24,7 @@ const tagedit: Omit<SlashCommandBuilder, "addSubcommandGroup" | "addSubcommand">
 
 export default command(tagedit, async ({ interaction }) => {
     console.log("edit tag");
-    const input: string = interaction.options.getString('tag_or_id')!;
+    const input: string = interaction.options.getString('input')!;
     const newtag: string = interaction.options.getString('new_tag')!;
     
     let unique: any = "";

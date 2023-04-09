@@ -9,7 +9,7 @@ const getone = new SlashCommandBuilder()
   .setDescription("Get one message with tag or id")
   .addStringOption((option: any) =>
     option
-      .setName('tag_or_id')
+      .setName('input')
       .setDescription('Enter the tag or the id of the quote you want to look up')
       .setMinLength(1)
       .setMaxLength(30)
@@ -23,7 +23,7 @@ export default command(getone, async ({ interaction }) => {
 })
 
 const one = async (interaction: ChatInputCommandInteraction) => {
-    const input: string = interaction.options.getString('tag_or_id')!
+    const input: string = interaction.options.getString('input')!
     const quote: any = await getQuote(input, interaction.guildId!)
         .catch((err: any) => {return findFailed(interaction, input, 105)})
     

@@ -2,7 +2,8 @@ import { EmbedBuilder, Client, User, GatewayIntentBits } from 'discord.js';
 import { QuoteDefault, QuoteImage } from './../types/quote';
 import keys from '../keys'
 import date from 'date-and-time';
-
+const lastUpdated = "April 8, 2023";
+const icon = "https://cdn.discordapp.com/avatars/270425872400384001/a108fdc91af94f8870e1b41b01bf8b3a.webp";
 const embedClient = new Client({
 	intents: [
 	  GatewayIntentBits.Guilds,
@@ -69,11 +70,11 @@ const quoteImageValue = `
 >>> For image/gif link, right click image on Discord -> click "Copy Link". Any URL to images is also viable.
 Quote any image, gif, video, or any Discord attachment-supported formats. Give it a funny title. Tag the quote for easy retrieval later. \
 `;
-const getQuoteName = "\`/get quote [id or tag]\`";
+const getQuoteName = "\`/get [id or tag]\`";
 const getQuoteValue = `
 > Retrieve and display a quote by its ID or tag.\
 `
-const getAllName = "\`/get all\`";
+const getAllName = "\`/list all\`";
 const getAllValue = `
 > Retrieve all quotes on this server. The display messages will only be visible to you.
 `;
@@ -123,7 +124,7 @@ export const embedHelp = (): EmbedBuilder[] => {
 	)
 	.setAuthor({ name: 'Damp', iconURL: 'https://cdn.discordapp.com/avatars/1076606284553539634/5ea3a8fc6da219ba071ae9a0e472d41a.webp', url: 'https://tinyurl.com/inviteDamp' })
 	.setThumbnail('https://cdn.discordapp.com/avatars/1076606284553539634/5ea3a8fc6da219ba071ae9a0e472d41a.webp')
-	.setFooter({ text: `@Sikang#7291 • Last updated: March 26, 2023`, iconURL: "https://images-ext-1.discordapp.net/external/S6JAqk5SH1XjnxaDN-XjvaWWfu1IcL8ga_m3Oj55Ue0/https/cdn.discordapp.com/avatars/270425872400384001/089c7e3f8c992803483caa7793ce7477.webp"});
+	.setFooter({ text: `@Sikang#7291 • Last updated: ${lastUpdated}`, iconURL: icon});
 	return [first, second]
 }
 
@@ -137,7 +138,7 @@ const administratorValue = `> Reflects administrator roles in the server (i.e. i
 const quoterName = `Quoter`
 const quoterValue = `> Quoter roles must be registered to Damp with the command /add role [@role]. Quoters has limited privileges: has a personal 10 quote limit and can only delete and tag one's own quotes. When a command is ran, Damp will check the user's Roles with the registered Quoter roles, where if any of the user's roles is considered as a Quoter, Damp will allow the action. Administrator permissions will take precedent over Quoter's permissions.`
 const userName = `User`;
-const userValue = `> User is anyone who is not an administrator and do not have any Quoter roles (e.g. anyone who just joined the server). User can use /get quote and /get all, however, /get all will only return the 10 lastest quoted on the server.`;
+const userValue = `> User is anyone who is not an administrator and do not have any Quoter roles (e.g. anyone who just joined the server). User can use /get and /list all, however, /list all will only return the 10 lastest quoted on the server.`;
 const onName = `Commands: \`/admin_only on/off\``;
 const onValue = `Turn Public Server Mode On/Off.`;
 const showInfoName = `\`/admin_only show_info\``;
