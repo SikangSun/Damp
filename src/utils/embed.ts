@@ -1,5 +1,5 @@
 import { EmbedBuilder, Client, User, GatewayIntentBits } from 'discord.js';
-import { QuoteDefault, QuoteImage } from './../types/quote';
+import { QuoteDefault, QuoteImage, QuoteVoice } from './../types/quote';
 import keys from '../keys'
 import date from 'date-and-time';
 const lastUpdated = "April 8, 2023";
@@ -18,19 +18,20 @@ const embedClient = new Client({
   })
 
 
-export const embedQuote = async (quote: QuoteDefault | QuoteImage): Promise<EmbedBuilder> => {
+export const embedQuote = async (quote: QuoteDefault | QuoteImage | QuoteVoice): Promise<EmbedBuilder> => {
 
-	if (quote.type === "message") {
+	if (quote.type === "message" || quote.type === "voice") {
 		return await embedMessage(quote);
 	}
 	else {
 		return await embedImage(quote);
 	}
 
+
 }
 
 
-const embedMessage = async (quote: QuoteDefault) : Promise<EmbedBuilder> => {
+const embedMessage = async (quote: QuoteDefault | QuoteVoice) : Promise<EmbedBuilder> => {
 	const time = `<t:${Math.floor(quote.timestamp.valueOf()/1000)}:f>`
     const user: User | void = await embedClient.users.fetch(quote.user) //user can be void
         .catch((err: any) => console.log(err))

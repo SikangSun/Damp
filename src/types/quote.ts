@@ -11,6 +11,17 @@ export type QuoteDefault = {
     tag: string;
 }
 
+export type QuoteVoice = {
+    id: number;
+    type: "voice";
+    content: string;
+    timestamp: Date;
+    user: string;
+    guild: string;
+    quoter: string;
+    tag: string;
+}
+
 export type QuoteImage = {
     id: number;
     type: "image";

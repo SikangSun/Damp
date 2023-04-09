@@ -19,8 +19,12 @@ export const isPublicServerOn = async (guild: string): Promise<boolean> => {
 
 export const roleExist = async (interaction: ChatInputCommandInteraction, role: string): Promise<boolean> => {
     const allRoles: string[] = Array.from(interaction.guild!.roles.cache.keys());
-
     return allRoles.includes(role);
+}
+
+export const userExist = async (interaction: ChatInputCommandInteraction, user: string): Promise<boolean> => {
+    const allMembers: string[] = Array.from(interaction.guild!.members.cache.keys());
+    return allMembers.includes(user);
 }
 
 export const isAdmin = (interaction: ChatInputCommandInteraction): boolean => {
@@ -50,3 +54,4 @@ export const getUserRole = async (interaction: ChatInputCommandInteraction): Pro
     }
     return role;
 }
+

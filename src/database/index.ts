@@ -1,5 +1,5 @@
 import { idOrTag } from './../utils/validation';
-import { QuoteDefault, QuoteImage, Sentinel } from './../types/quote';
+import { QuoteDefault, QuoteImage, Sentinel, QuoteVoice } from './../types/quote';
 import { MongoClient } from 'mongodb'
 
 require('dotenv').config();
@@ -7,7 +7,7 @@ require('dotenv').config();
 export let db: any;
 
 
-export const insertQuote = async ( quote: QuoteDefault | QuoteImage): Promise<void> => {
+export const insertQuote = async ( quote: QuoteDefault | QuoteImage | QuoteVoice): Promise<void> => {
   const temp = await initializeCollection(quote.guild);
   quote.id = await getNextSequence(quote.guild);
   await temp.insertOne(quote)

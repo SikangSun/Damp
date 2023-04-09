@@ -26,6 +26,9 @@ export const insertionFailed = (interaction: ChatInputCommandInteraction, tag: s
         case 107:
             errMsg = "Quote failed: You have reached 10 quotes quote limit. Please delete one of your quotes or request an adminstrator role and try again."
             break;
+        case 108:
+            errMsg = "Quote failed: Incorrect user id format. Please @ the user you want to quote. Rest assured, it will not ping the user."
+            break;
         default:
             errMsg = "Quote failed, please try again later"
     }
