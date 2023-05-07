@@ -21,34 +21,36 @@ export default command(cah, async ({ interaction }) => {
     }
   )
   const quotes = await getRandomQuote(interaction.guildId!, 5);
-  const callback = [];
-  console.log(quotes)
+
+=
   let promises: any = [];
   quotes.forEach(async (element: QuoteDefault, i: number) => {
     promises.push(embedQuote(element)); // Add each promise to the array
       // Wait for all promises to resolve using Promise.all()
   });
-  // Promise.all(promises).then((list) => {
-  //   list.forEach((element: any, i: number) => {
-  //     const button = new ButtonBuilder()
-  //       .setCustomId(i.toString())
-  //       .setLabel('Select')
-  //       .setStyle(ButtonStyle.Primary)
+  const callback = [];
+  Promise.all(promises).then((list) => {
+    list.forEach((element: any, i: number) => {
+      const button = new ButtonBuilder()
+        .setCustomId(i.toString())
+        .setLabel('Select')
+        .setStyle(ButtonStyle.Primary)
       
-	// 	const row  = new ActionRowBuilder<ButtonBuilder>()
-  //     .addComponents(button);
-  //       const temp = interaction.followUp({
-  //           ephemeral: true,
-  //           embeds: [element],
-  //           components: [row]
-  //       });
-  //       callback.push(temp);
-  //   })
-  //   })
-    // try {
-    //   const confirmation = await response.awaitMessageComponent({ time: 60000 });
-    // } catch (e) {
-    //   await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
-    // }
-    
+		const row  = new ActionRowBuilder<ButtonBuilder>()
+      .addComponents(button);
+        const temp = interaction.followUp({
+            ephemeral: true,
+            embeds: [element],
+            components: [row]
+        });
+        callback.push(temp);
+    })
+    })
+  Promise.all(callback).then(async (messageList) => {
+    try {
+      const confirmation = await message.awaitMessageComponent({ time: 60000 });
+    } catch (e) {
+      await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
+    }
+  })
 })
