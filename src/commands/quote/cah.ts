@@ -14,22 +14,23 @@ export default command(cah, async ({ interaction }) => {
   console.log("cah");
   // const quotes: string[] = await getAllQuotes(interaction.guildId!);
   //TODO: handle less than 5 quotes
+  const prompt = blackcards[Math.floor(Math.random() * blackcards.length)];
   const message: any = await interaction.reply(
     {
         ephemeral: false,
-        content: `Prompt: ${blackcards[Math.floor(Math.random() * blackcards.length)]}` 
+        content: `Prompt: ${prompt}` 
     }
   )
   const quotes = await getRandomQuote(interaction.guildId!, 5);
 
-=
   let promises: any = [];
   quotes.forEach(async (element: QuoteDefault, i: number) => {
     promises.push(embedQuote(element)); // Add each promise to the array
       // Wait for all promises to resolve using Promise.all()
   });
-  const callback = [];
+  const callback: any = [];
   Promise.all(promises).then((list) => {
+    console.log("first")
     list.forEach((element: any, i: number) => {
       const button = new ButtonBuilder()
         .setCustomId(i.toString())
@@ -39,18 +40,34 @@ export default command(cah, async ({ interaction }) => {
 		const row  = new ActionRowBuilder<ButtonBuilder>()
       .addComponents(button);
         const temp = interaction.followUp({
-            ephemeral: true,
             embeds: [element],
             components: [row]
         });
         callback.push(temp);
     })
+    Promise.all(callback).then(async (messageList) => {
+      try {
+        console.log("second")
+        let awaitList: any[] = [];
+        const collectorFilter = (i:any) => i.user.id === interaction.user.id;
+        messageList.forEach((m: any) => {
+          awaitList.push(m.awaitMessageComponent({filter: collectorFilter, time: 60000 }));
+        })
+        Promise.race(awaitList).then(async (selected: any) => {
+          messageList.forEach((element: any) => {element.delete()});
+          console.log(selected.customId)
+          const element = list[parseInt(selected.customId)];
+          await interaction.editReply({ 
+            content: `**Prompt: ${prompt}**\n, and ${interaction.user.username} chose`,
+            embeds: [element],
+          });
+        });
+      } catch (e) {
+        console.log(e)
+        messageList.forEach((element: any) => {element.delete()});
+        await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
+      }
     })
-  Promise.all(callback).then(async (messageList) => {
-    try {
-      const confirmation = await message.awaitMessageComponent({ time: 60000 });
-    } catch (e) {
-      await interaction.editReply({ content: 'Confirmation not received within 1 minute, cancelling', components: [] });
-    }
   })
+
 })

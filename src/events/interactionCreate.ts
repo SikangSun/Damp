@@ -1,7 +1,7 @@
 import commands from '../commands'
 import { Command } from '../types'
 import { EditReply, event, Reply } from '../utils'
-
+console.log(commands)
 const allCommands = commands.map(({ commands }) => commands).flat()
 const allCommandsMap = new Map<string, Command>(
   allCommands.map((c) => [c.meta.name, c])
