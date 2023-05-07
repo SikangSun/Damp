@@ -11,6 +11,13 @@ const getall = new SlashCommandBuilder()
     return option
     .setName("all")
     .setDescription("Get all messages")
+    .addIntegerOption(suboption =>
+        suboption.setName('limit')
+        .setDescription('Limit the number of quotes list all retrieves')
+            .setMinValue(0)
+            .setMaxValue(10000)
+            .setRequired(false)
+    )
   })
 
 
@@ -21,6 +28,7 @@ export default command(getall, async ({ interaction }) => {
 
 const all = async (interaction: ChatInputCommandInteraction) => {
     console.log("getall");
+    const limit: number = interaction.options.getInteger('limit')!
     let content: any = await getAllQuotes(interaction.guildId!)
         .catch((err: any) => {console.log(err); return findFailed(interaction, "", 105)})
 
@@ -59,6 +67,9 @@ const all = async (interaction: ChatInputCommandInteraction) => {
     if (await isPublicServerOn(interaction.guildId!) == true && await getUserRole(interaction) == Role.USER) {
         content = content.slice(-10); //Role checking
     } 
+    else if (limit && limit < content.length) {
+        content = content.slice(-1 * limit);
+    }
 
     let promises: any = []; // Array to store promises
     content.forEach(async (element: QuoteDefault, i: number) => {
