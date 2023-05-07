@@ -1,9 +1,27 @@
 import { QuoteDefault } from './../../types/quote';
-import { blackcards } from './../../client/index';
+// import { blackcards } from './../../client/index';
 import { EmbedBuilder, SlashCommandBuilder, ButtonBuilder, ButtonStyle, ActionRowBuilder  } from 'discord.js';
 import { getRandomQuote } from "./../../database"
 import { command,  embedQuote, } from '../../utils';
+const fs = require('fs');
 
+export let blackcards: string[] = [];
+
+fs.readFile('src/client/cah.json', 'utf8', (err: any, data: any) => {
+  if (err) {
+    console.error(err);
+    return;
+  }
+  const json = JSON.parse(data);
+  json.map((obj: any) => {
+    blackcards = blackcards.concat(obj.black);
+  })
+  blackcards = blackcards.filter((obj: any) => {
+    return obj.pick === 1
+  })
+  blackcards = blackcards.map((obj: any) => { return obj.text.replace(/_/g, '[BLANK]');;});
+  //console.log(blackcards)
+});
 
 const meme = new SlashCommandBuilder()
   .setName('meme')
@@ -12,7 +30,6 @@ const meme = new SlashCommandBuilder()
 
 export default command(meme, async ({ interaction }) => {
   console.log("cah");
-  // const quotes: string[] = await getAllQuotes(interaction.guildId!);
   //TODO: handle less than 5 quotes
   const prompt = blackcards[Math.floor(Math.random() * blackcards.length)];
   const message: any = await interaction.reply(
@@ -30,7 +47,6 @@ export default command(meme, async ({ interaction }) => {
   });
   const callback: any = [];
   Promise.all(promises).then((list) => {
-    console.log("first")
     list.forEach((element: any, i: number) => {
       const button = new ButtonBuilder()
         .setCustomId(i.toString())
@@ -47,7 +63,6 @@ export default command(meme, async ({ interaction }) => {
     }) //list foreach
     Promise.all(callback).then(async (messageList) => {
       try {
-        console.log("second")
         let awaitList: any[] = [];
         const collectorFilter = (i:any) => i.user.id === interaction.user.id;
         messageList.forEach((m: any) => {
