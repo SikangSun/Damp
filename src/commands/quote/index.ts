@@ -1,4 +1,5 @@
 import { category } from '../../utils'
+import meme from "./meme"
 import quote from './quote'
 import getone from "./get"
 import tagedit from "./update"
@@ -7,10 +8,10 @@ import random from "./random"
 import roles from "./roles"
 import help from "./help"
 import getall from "./getall"
-import cah from "./cah"
+
 
 export default category('quote', [
-  cah, quote, getone, tagedit, deleteone, random, roles, help, getall
+  meme, quote, getone, tagedit, deleteone, random, roles, help, getall
 ])
 
 

@@ -5,12 +5,12 @@ import { getRandomQuote } from "./../../database"
 import { command,  embedQuote, } from '../../utils';
 
 
-const cah = new SlashCommandBuilder()
+const meme = new SlashCommandBuilder()
   .setName('meme')
   .setDescription('Make a Cards Against Humanity meme with your quotes')
 
 
-export default command(cah, async ({ interaction }) => {
+export default command(meme, async ({ interaction }) => {
   console.log("cah");
   // const quotes: string[] = await getAllQuotes(interaction.guildId!);
   //TODO: handle less than 5 quotes
@@ -44,7 +44,7 @@ export default command(cah, async ({ interaction }) => {
             components: [row]
         });
         callback.push(temp);
-    })
+    }) //list foreach
     Promise.all(callback).then(async (messageList) => {
       try {
         console.log("second")
