@@ -1,5 +1,5 @@
-import { QuoteImage } from './../../types/quote';
 import { category } from '../../utils'
+import meme from "./meme"
 import quote from './quote'
 import getone from "./get"
 import tagedit from "./update"
@@ -9,8 +9,9 @@ import roles from "./roles"
 import help from "./help"
 import getall from "./getall"
 
+
 export default category('quote', [
-  quote, getone, tagedit, deleteone, random, roles, help, getall
+  meme, quote, getone, tagedit, deleteone, random, roles, help, getall
 ])
 
 

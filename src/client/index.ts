@@ -3,6 +3,7 @@ import { Client, GatewayIntentBits, ActivityType  } from 'discord.js'
 import { registerEvents } from '../utils'
 import events from '../events'
 import keys from '../keys'
+const fs = require('fs');
 
 const client = new Client({
   intents: [
@@ -10,6 +11,7 @@ const client = new Client({
     GatewayIntentBits.GuildMembers,
   ],
 })
+
 
 registerEvents(client, events)
 
@@ -21,7 +23,7 @@ client.login(keys.clientToken).then(async () => {
       status: 'dnd',
     })
   })
-  .catch((err) => {
+  .catch((err: any) => {
     console.error('[Login Error]', err)
     process.exit(1)
   })
