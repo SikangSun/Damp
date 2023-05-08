@@ -11,9 +11,9 @@ const random = new SlashCommandBuilder()
 
 
 export default command(random, async ({ interaction }) => {
-    const quote: any = await getRandomQuote(interaction.guildId!)
+    let quote: any = await getRandomQuote(interaction.guildId!, 1)
     .catch((err: any) => {return findFailed(interaction, "", 105)})
-
+    quote = quote[0];
     if (quote) {
         const embed: EmbedBuilder = await embedQuote(quote);
         return await interaction.reply({

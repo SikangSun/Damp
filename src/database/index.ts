@@ -17,13 +17,13 @@ export const insertQuote = async ( quote: QuoteDefault | QuoteImage | QuoteVoice
 
 
 
-export const getRandomQuote = async (guildID: string) => {
+export const getRandomQuote = async (guildID: string, size: number) => {
   const temp = await initializeCollection(guildID);
   const all = await temp.aggregate([
     { $match: { type: { $ne: "sentinel" } } },
-    { $sample: { size: 1 } }
+    { $sample: { size: size } }
   ]).toArray()
-  return all[0];
+  return all;
 }
 
 
